@@ -189,15 +189,8 @@ require 'monitor'
 
 
 class Logger
-  VERSION = "1.2.7.1"
-  _, name, rev = %w$Id$
-  if name
-    name = name.chomp(",v")
-  else
-    name = File.basename(__FILE__)
-  end
-  rev ||= "v#{VERSION}"
-  ProgName = "#{name}/#{rev}"
+  VERSION = "1.2.8"
+  ProgName = "#{File.basename(__FILE__)}/#{VERSION}"
 
   class Error < RuntimeError; end
   class ShiftingError < Error; end # not used after 1.2.7. just for compat.
