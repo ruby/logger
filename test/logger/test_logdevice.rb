@@ -435,7 +435,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_midnight
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([*%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([*%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -477,7 +477,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -522,7 +522,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -567,7 +567,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"Europe/London"}, *%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"Europe/London"}, *%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -686,7 +686,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_midnight_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([*%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([*%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -730,7 +730,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -777,7 +777,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"--disable=gems -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
