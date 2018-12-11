@@ -1,8 +1,15 @@
 # Logger
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/logger`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Build Status](https://travis-ci.com/ruby/logger.svg?branch=master)](https://travis-ci.com/ruby/logger.svg?branch=master)
 
-TODO: Delete this and the text above, and describe your gem
+Logger is a simple but powerful logging utility to output messages in your Ruby program.
+
+Logger has the following features:
+
+ * Print messages to different levels such as `info` and `error`
+ * Auto-rolling of log files
+ * Setting the format of log messages
+ * Specifying a program name in conjunction with the message
 
 ## Installation
 
@@ -22,7 +29,19 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+### Simple Example
+
+    require 'logger'
+
+    # Create a Logger that prints to STDOUT
+    log = Logger.new(STDOUT)
+    log.debug("Created Logger")
+
+    log.info("Program finished")
+
+    # Create a Logger that prints to STDERR
+    error_log = Logger.new(STDERR)
+    error_log = Logger.error("fatal error")
 
 ## Development
 
