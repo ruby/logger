@@ -175,7 +175,7 @@ require 'monitor'
 
 
 class Logger
-  VERSION = "1.2.7"
+  VERSION = "1.2.7.1"
   id, name, rev = %w$Id$
   if name
     name = name.chomp(",v")
