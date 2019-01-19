@@ -1,6 +1,6 @@
 Gem::Specification.new do |spec|
   spec.name          = "logger"
-  spec.version       = "1.2.7.1"
+  spec.version       = "1.2.8.1"
   spec.authors       = ["NAKAMURA, Hiroshi", "SHIBATA Hiroshi"]
   spec.email         = ["nahi@ruby-lang.org", "hsbt@ruby-lang.org"]
 

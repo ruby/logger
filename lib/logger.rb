@@ -189,7 +189,7 @@ require 'monitor'
 
 
 class Logger
-  VERSION = "1.2.8"
+  VERSION = "1.2.8.1"
   ProgName = "#{File.basename(__FILE__)}/#{VERSION}"
 
   class Error < RuntimeError; end
