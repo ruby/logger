@@ -7,8 +7,11 @@ matrix:
     - rvm: 2.4
     - rvm: 2.5
     - rvm: 2.6
+    - rvm: 2.6
+      os: osx
     - rvm: ruby-head
   allow_failures:
     - rvm: 2.3
+    - os: osx
 
 script: rake test
