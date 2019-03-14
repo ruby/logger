@@ -451,7 +451,7 @@ class Logger
   # * Append open does not need to lock file.
   # * If the OS supports multi I/O, records possibly may be mixed.
   #
-  def add(severity, message = nil, progname = nil)
+  def add(severity, message = nil, progname = nil, &block)
     severity ||= UNKNOWN
     if @logdev.nil? or severity < @level
       return true
@@ -461,7 +461,13 @@ class Logger
     end
     if message.nil?
       if block_given?
-        message = yield
+        if block.arity > 0
+          buffer = StringIO.new
+          yield buffer
+          message = buffer.string
+        else
+          message = yield
+        end
       else
         message = progname
         progname = @progname
