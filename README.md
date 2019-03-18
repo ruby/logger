@@ -56,7 +56,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 `--location` option is available as:
 
 ```
-bundle exec ruby test/logger/test_logger.rb --location 40
+ruby test/logger/test_logger.rb --location 40
 ```
 
 ## Contributing
