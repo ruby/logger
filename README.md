@@ -87,6 +87,14 @@ $ ruby test/logger/test_logger.rb
 $ ruby test/logger/test_logger.rb --name test_lshift
 ```
 
+### Publish documents to GitHub Pages
+
+```
+$ rake gh-pages
+```
+
+Then, git commit and push the generated HTMLs onto `gh-pages` branch.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/ruby/logger.

@@ -16,7 +16,7 @@ RDoc::Task.new do |doc|
   doc.rdoc_dir = "html"
 end
 
-task ghpages: :rdoc do
+task "gh-pages" => :rdoc do
   %x[git checkout gh-pages]
   require "fileutils"
   FileUtils.rm_rf "/tmp/html"
