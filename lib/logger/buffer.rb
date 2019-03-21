@@ -2,8 +2,9 @@ require 'stringio'
 
 class Logger
   class Buffer
-    def initialize(io = StringIO.new, prefix = '[...]')
+    def initialize(io = StringIO.new, prefix = "\t")
       @io = io
+      @first = true
       @prefix = prefix
     end
     
@@ -11,7 +12,12 @@ class Logger
     
     def puts(*args)
       args.each do |arg|
-        @io.puts "#{@prefix}#{arg}"
+        if @first
+          @io.puts arg
+          @first = false
+        else
+          @io.puts "#{@prefix}#{arg}"
+        end
       end
     end
   end
