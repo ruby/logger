@@ -1,6 +1,6 @@
 # coding: US-ASCII
 # frozen_string_literal: false
-require 'test/unit'
+require_relative '../helper'
 require 'logger'
 
 class TestBuffer < Test::Unit::TestCase
