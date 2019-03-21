@@ -1,0 +1,1590 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class Logger - Logger -- Ruby Standard Logger</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/jquery.js"></script>
+<script src="./js/darkfish.js"></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+<div class="nav-section">
+  <h3>Table of Contents</h3>
+
+  <ul class="link-list" role="directory">
+    <li><a href="#class-Logger-label-Description">Description</a>
+    <li><a href="#class-Logger-label-Example">Example</a>
+    <li><a href="#class-Logger-label-Features">Features</a>
+    <li><a href="#class-Logger-label-HOWTOs">HOWTOs</a>
+    <li><a href="#class-Logger-label-How+to+create+a+logger">How to create a logger</a>
+    <li><a href="#class-Logger-label-How+to+log+a+message">How to log a message</a>
+    <li><a href="#class-Logger-label-How+to+close+a+logger">How to close a logger</a>
+    <li><a href="#class-Logger-label-Setting+severity+threshold">Setting severity threshold</a>
+    <li><a href="#class-Logger-label-Format">Format</a>
+  </ul>
+</div>
+
+
+  <div id="class-metadata">
+    
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    <div id="includes-section" class="nav-section">
+  <h3>Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="Logger/Severity.html">Logger::Severity</a>
+  
+  
+  </ul>
+</div>
+
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-3C-3C">#&lt;&lt;</a>
+    
+    <li ><a href="#method-i-add">#add</a>
+    
+    <li ><a href="#method-i-close">#close</a>
+    
+    <li ><a href="#method-i-datetime_format">#datetime_format</a>
+    
+    <li ><a href="#method-i-datetime_format-3D">#datetime_format=</a>
+    
+    <li ><a href="#method-i-debug">#debug</a>
+    
+    <li ><a href="#method-i-debug-21">#debug!</a>
+    
+    <li ><a href="#method-i-debug-3F">#debug?</a>
+    
+    <li ><a href="#method-i-error">#error</a>
+    
+    <li ><a href="#method-i-error-21">#error!</a>
+    
+    <li ><a href="#method-i-error-3F">#error?</a>
+    
+    <li ><a href="#method-i-fatal">#fatal</a>
+    
+    <li ><a href="#method-i-fatal-21">#fatal!</a>
+    
+    <li ><a href="#method-i-fatal-3F">#fatal?</a>
+    
+    <li ><a href="#method-i-info">#info</a>
+    
+    <li ><a href="#method-i-info-21">#info!</a>
+    
+    <li ><a href="#method-i-info-3F">#info?</a>
+    
+    <li ><a href="#method-i-level-3D">#level=</a>
+    
+    <li ><a href="#method-i-log">#log</a>
+    
+    <li ><a href="#method-i-reopen">#reopen</a>
+    
+    <li ><a href="#method-i-sev_threshold-3D">#sev_threshold=</a>
+    
+    <li ><a href="#method-i-unknown">#unknown</a>
+    
+    <li ><a href="#method-i-warn">#warn</a>
+    
+    <li ><a href="#method-i-warn-21">#warn!</a>
+    
+    <li ><a href="#method-i-warn-3F">#warn?</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Logger">
+  <h1 id="class-Logger" class="class">
+    class Logger
+  </h1>
+
+  <section class="description">
+    
+<h2 id="class-Logger-label-Description">Description<span><a href="#class-Logger-label-Description">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>The <a href="Logger.html"><code>Logger</code></a> class provides a simple but sophisticated logging utility that you can use to output messages.</p>
+
+<p>The messages have associated levels, such as <code>INFO</code> or <code>ERROR</code> that indicate their importance.  You can then give the <a href="Logger.html"><code>Logger</code></a> a level, and only messages at that level or higher will be printed.</p>
+
+<p>The levels are:</p>
+<dl class="rdoc-list note-list"><dt><code>UNKNOWN</code>
+<dd>
+<p>An unknown message that should always be logged.</p>
+</dd><dt><code>FATAL</code>
+<dd>
+<p>An unhandleable error that results in a program crash.</p>
+</dd><dt><code>ERROR</code>
+<dd>
+<p>A handleable error condition.</p>
+</dd><dt><code>WARN</code>
+<dd>
+<p>A warning.</p>
+</dd><dt><code>INFO</code>
+<dd>
+<p>Generic (useful) information about system operation.</p>
+</dd><dt><code>DEBUG</code>
+<dd>
+<p>Low-level information for developers.</p>
+</dd></dl>
+
+<p>For instance, in a production system, you may have your <a href="Logger.html"><code>Logger</code></a> set to <code>INFO</code> or even <code>WARN</code>. When you are developing the system, however, you probably want to know about the program&#39;s internal state, and would set the <a href="Logger.html"><code>Logger</code></a> to <code>DEBUG</code>.</p>
+
+<p><strong>Note</strong>: <a href="Logger.html"><code>Logger</code></a> does not escape or sanitize any messages passed to it. Developers should be aware of when potentially malicious data (user-input) is passed to <a href="Logger.html"><code>Logger</code></a>, and manually escape the untrusted data:</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-node">&quot;User-input: #{input.dump}&quot;</span>)
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-string">&quot;User-input: %p&quot;</span> <span class="ruby-operator">%</span> <span class="ruby-identifier">input</span>)
+</pre>
+
+<p>You can use <a href="Logger.html#attribute-i-formatter"><code>formatter=</code></a> for escaping all data.</p>
+
+<pre class="ruby"><span class="ruby-identifier">original_formatter</span> = <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">Formatter</span>.<span class="ruby-identifier">new</span>
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">formatter</span> = <span class="ruby-identifier">proc</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">severity</span>, <span class="ruby-identifier">datetime</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-identifier">msg</span><span class="ruby-operator">|</span>
+  <span class="ruby-identifier">original_formatter</span>.<span class="ruby-identifier">call</span>(<span class="ruby-identifier">severity</span>, <span class="ruby-identifier">datetime</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-identifier">msg</span>.<span class="ruby-identifier">dump</span>)
+}
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-identifier">input</span>)
+</pre>
+
+<h3 id="class-Logger-label-Example">Example<span><a href="#class-Logger-label-Example">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>This creates a <a href="Logger.html"><code>Logger</code></a> that outputs to the standard output stream, with a level of <code>WARN</code>:</p>
+
+<pre class="ruby"><span class="ruby-identifier">require</span> <span class="ruby-string">&#39;logger&#39;</span>
+
+<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">STDOUT</span>)
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">WARN</span>
+
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-string">&quot;Created logger&quot;</span>)
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-string">&quot;Program started&quot;</span>)
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">warn</span>(<span class="ruby-string">&quot;Nothing to do!&quot;</span>)
+
+<span class="ruby-identifier">path</span> = <span class="ruby-string">&quot;a_non_existent_file&quot;</span>
+
+<span class="ruby-keyword">begin</span>
+  <span class="ruby-constant">File</span>.<span class="ruby-identifier">foreach</span>(<span class="ruby-identifier">path</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">line</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">unless</span> <span class="ruby-identifier">line</span> <span class="ruby-operator">=~</span> <span class="ruby-regexp">/^(\w+) = (.*)$/</span>
+      <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span>(<span class="ruby-node">&quot;Line in wrong format: #{line.chomp}&quot;</span>)
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">rescue</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">err</span>
+  <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">fatal</span>(<span class="ruby-string">&quot;Caught exception; exiting&quot;</span>)
+  <span class="ruby-identifier">logger</span>.<span class="ruby-identifier">fatal</span>(<span class="ruby-identifier">err</span>)
+<span class="ruby-keyword">end</span>
+</pre>
+
+<p>Because the Logger&#39;s level is set to <code>WARN</code>, only the warning, error, and fatal messages are recorded.  The debug and info messages are silently discarded.</p>
+
+<h3 id="class-Logger-label-Features">Features<span><a href="#class-Logger-label-Features">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>There are several interesting features that <a href="Logger.html"><code>Logger</code></a> provides, like auto-rolling of log files, setting the format of log messages, and specifying a program name in conjunction with the message.  The next section shows you how to achieve these things.</p>
+
+<h2 id="class-Logger-label-HOWTOs">HOWTOs<span><a href="#class-Logger-label-HOWTOs">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="class-Logger-label-How+to+create+a+logger">How to create a logger<span><a href="#class-Logger-label-How+to+create+a+logger">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>The options below give you various choices, in more or less increasing complexity.</p>
+<ol><li>
+<p>Create a logger which logs messages to STDERR/STDOUT.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">STDERR</span>)
+<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-constant">STDOUT</span>)
+</pre>
+</li><li>
+<p>Create a logger for the file which has the specified name.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;logfile.log&#39;</span>)
+</pre>
+</li><li>
+<p>Create a logger for the specified file.</p>
+
+<pre class="ruby"><span class="ruby-identifier">file</span> = <span class="ruby-constant">File</span>.<span class="ruby-identifier">open</span>(<span class="ruby-string">&#39;foo.log&#39;</span>, <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">WRONLY</span> <span class="ruby-operator">|</span> <span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-constant">APPEND</span>)
+<span class="ruby-comment"># To create new logfile, add File::CREAT like:</span>
+<span class="ruby-comment"># file = File.open(&#39;foo.log&#39;, File::WRONLY | File::APPEND | File::CREAT)</span>
+<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">file</span>)
+</pre>
+</li><li>
+<p>Create a logger which ages the logfile once it reaches a certain size. Leave 10 “old” log files where each file is about 1,024,000 bytes.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;foo.log&#39;</span>, <span class="ruby-value">10</span>, <span class="ruby-value">1024000</span>)
+</pre>
+</li><li>
+<p>Create a logger which ages the logfile daily/weekly/monthly.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;foo.log&#39;</span>, <span class="ruby-string">&#39;daily&#39;</span>)
+<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;foo.log&#39;</span>, <span class="ruby-string">&#39;weekly&#39;</span>)
+<span class="ruby-identifier">logger</span> = <span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&#39;foo.log&#39;</span>, <span class="ruby-string">&#39;monthly&#39;</span>)
+</pre>
+</li></ol>
+
+<h3 id="class-Logger-label-How+to+log+a+message">How to log a message<span><a href="#class-Logger-label-How+to+log+a+message">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Notice the different methods (<code>fatal</code>, <code>error</code>, <code>info</code>) being used to log messages of various levels?  Other methods in this family are <code>warn</code> and <code>debug</code>.  <code>add</code> is used below to log a message of an arbitrary (perhaps dynamic) level.</p>
+<ol><li>
+<p>Message in a block.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">fatal</span> { <span class="ruby-string">&quot;Argument &#39;foo&#39; not given.&quot;</span> }
+</pre>
+</li><li>
+<p>Message as a string.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">error</span> <span class="ruby-node">&quot;Argument #{@foo} mismatch.&quot;</span>
+</pre>
+</li><li>
+<p>With progname.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-string">&#39;initialize&#39;</span>) { <span class="ruby-string">&quot;Initializing...&quot;</span> }
+</pre>
+</li><li>
+<p>With severity.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">add</span>(<span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">FATAL</span>) { <span class="ruby-string">&#39;Fatal error!&#39;</span> }
+</pre>
+</li></ol>
+
+<p>The block form allows you to create potentially complex log messages, but to delay their evaluation until and unless the message is logged.  For example, if we have the following:</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">debug</span> { <span class="ruby-string">&quot;This is a &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">potentially</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; expensive operation&quot;</span> }
+</pre>
+
+<p>If the logger&#39;s level is <code>INFO</code> or higher, no debug messages will be logged, and the entire block will not even be evaluated.  Compare to this:</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">debug</span>(<span class="ruby-string">&quot;This is a &quot;</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">potentially</span> <span class="ruby-operator">+</span> <span class="ruby-string">&quot; expensive operation&quot;</span>)
+</pre>
+
+<p>Here, the string concatenation is done every time, even if the log level is not set to show the debug message.</p>
+
+<h3 id="class-Logger-label-How+to+close+a+logger">How to close a logger<span><a href="#class-Logger-label-How+to+close+a+logger">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">close</span>
+</pre>
+
+<h3 id="class-Logger-label-Setting+severity+threshold">Setting severity threshold<span><a href="#class-Logger-label-Setting+severity+threshold">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ol><li>
+<p>Original interface.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">sev_threshold</span> = <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">WARN</span>
+</pre>
+</li><li>
+<p>Log4r (somewhat) compatible interface.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">INFO</span>
+
+<span class="ruby-comment"># DEBUG &lt; INFO &lt; WARN &lt; ERROR &lt; FATAL &lt; UNKNOWN</span>
+</pre>
+</li><li>
+<p>Symbol or String (case insensitive)</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">level</span> = <span class="ruby-value">:info</span>
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">level</span> = <span class="ruby-string">&#39;INFO&#39;</span>
+
+<span class="ruby-comment"># :debug &lt; :info &lt; :warn &lt; :error &lt; :fatal &lt; :unknown</span>
+</pre>
+</li><li>
+<p>Constructor</p>
+
+<pre class="ruby"><span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">level:</span> <span class="ruby-constant">Logger</span><span class="ruby-operator">::</span><span class="ruby-constant">INFO</span>)
+<span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">level:</span> <span class="ruby-value">:info</span>)
+<span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">level:</span> <span class="ruby-string">&#39;INFO&#39;</span>)
+</pre>
+</li></ol>
+
+<h2 id="class-Logger-label-Format">Format<span><a href="#class-Logger-label-Format">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<p>Log messages are rendered in the output stream in a certain format by default.  The default format and a sample are shown below:</p>
+
+<p>Log format:</p>
+
+<pre>SeverityID, [DateTime #pid] SeverityLabel -- ProgName: message</pre>
+
+<p>Log sample:</p>
+
+<pre>I, [1999-03-03T02:34:24.895701 #19074]  INFO -- Main: info.</pre>
+
+<p>You may change the date and time format via <a href="Logger.html#method-i-datetime_format-3D"><code>datetime_format=</code></a>.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">datetime_format</span> = <span class="ruby-string">&#39;%Y-%m-%d %H:%M:%S&#39;</span>
+      <span class="ruby-comment"># e.g. &quot;2004-01-03 00:54:26&quot;</span>
+</pre>
+
+<p>or via the constructor.</p>
+
+<pre class="ruby"><span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">datetime_format:</span> <span class="ruby-string">&#39;%Y-%m-%d %H:%M:%S&#39;</span>)
+</pre>
+
+<p>Or, you may change the overall format via the <a href="Logger.html#attribute-i-formatter"><code>formatter=</code></a> method.</p>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">formatter</span> = <span class="ruby-identifier">proc</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">severity</span>, <span class="ruby-identifier">datetime</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-identifier">msg</span><span class="ruby-operator">|</span>
+  <span class="ruby-node">&quot;#{datetime}: #{msg}\n&quot;</span>
+<span class="ruby-keyword">end</span>
+<span class="ruby-comment"># e.g. &quot;2005-09-22 08:51:08 +0900: hello world&quot;</span>
+</pre>
+
+<p>or via the constructor.</p>
+
+<pre class="ruby"><span class="ruby-constant">Logger</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">formatter:</span> <span class="ruby-identifier">proc</span> {<span class="ruby-operator">|</span><span class="ruby-identifier">severity</span>, <span class="ruby-identifier">datetime</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-identifier">msg</span><span class="ruby-operator">|</span>
+  <span class="ruby-node">&quot;#{datetime}: #{msg}\n&quot;</span>
+})
+</pre>
+
+<p>not used after 1.2.7. just for compat.</p>
+
+  </section>
+
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <section class="constants-list">
+      <header>
+        <h3>Constants</h3>
+      </header>
+      <dl>
+      
+        <dt id="ProgName">ProgName
+        
+        <dd>
+        
+      
+        <dt id="SEV_LABEL">SEV_LABEL
+        
+        <dd><p><a href="Logger/Severity.html"><code>Severity</code></a> label for logging (max 5 chars).</p>
+        
+      
+        <dt id="VERSION">VERSION
+        
+        <dd>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+    <section class="attribute-method-details" class="method-section">
+      <header>
+        <h3>Attributes</h3>
+      </header>
+
+      
+      <div id="attribute-i-formatter" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">formatter</span><span
+            class="attribute-access-type">[RW]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Logging formatter, as a <code>Proc</code> that will take four arguments and return the formatted message. The arguments are:</p>
+<dl class="rdoc-list note-list"><dt><code>severity</code>
+<dd>
+<p>The <a href="Logger/Severity.html"><code>Severity</code></a> of the log message.</p>
+</dd><dt><code>time</code>
+<dd>
+<p>A Time instance representing when the message was logged.</p>
+</dd><dt><code>progname</code>
+<dd>
+<p>The <a href="Logger.html#attribute-i-progname"><code>progname</code></a> configured, or passed to the logger method.</p>
+</dd><dt><code>msg</code>
+<dd>
+<p>The <em>Object</em> the user passed to the log message; not necessarily a String.</p>
+</dd></dl>
+
+<p>The block should return an Object that can be written to the logging device via <code>write</code>.  The default formatter is used when no formatter is set.</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-level" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">level</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Logging severity threshold (e.g. <code>Logger::INFO</code>).</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-progname" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">progname</span><span
+            class="attribute-access-type">[RW]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Program name to include in log messages.</p>
+        
+        </div>
+      </div>
+      
+      <div id="attribute-i-sev_threshold" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">sev_threshold</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        <p>Logging severity threshold (e.g. <code>Logger::INFO</code>).</p>
+        
+        </div>
+      </div>
+      
+    </section>
+    
+
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, shift_age = 0, shift_size = 1048576)
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, shift_age = &#39;weekly&#39;)
+          </span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, level: :info)
+          </span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, progname: &#39;progname&#39;)
+          </span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, formatter: formatter)
+          </span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            new(logdev, datetime_format: &#39;%Y-%m-%d %H:%M:%S&#39;)
+          </span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <h3 id="method-c-new-label-Args">Args<span><a href="#method-c-new-label-Args">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<dl class="rdoc-list note-list"><dt><code>logdev</code>
+<dd>
+<p>The log device.  This is a filename (String) or IO object (typically <code>STDOUT</code>, <code>STDERR</code>, or an open file).</p>
+</dd><dt><code>shift_age</code>
+<dd>
+<p>Number of old log files to keep, <strong>or</strong> frequency of rotation (<code>daily</code>, <code>weekly</code> or <code>monthly</code>). Default value is 0.</p>
+</dd><dt><code>shift_size</code>
+<dd>
+<p>Maximum logfile size in bytes (only applies when <code>shift_age</code> is a number). Defaults to <code>1048576</code> (1MB).</p>
+</dd><dt><code>level</code>
+<dd>
+<p>Logging severity threshold. Default values is Logger::DEBUG.</p>
+</dd><dt><code>progname</code>
+<dd>
+<p>Program name to include in log messages. Default value is nil.</p>
+</dd><dt><code>formatter</code>
+<dd>
+<p>Logging formatter. Default values is an instance of <a href="Logger/Formatter.html"><code>Logger::Formatter</code></a>.</p>
+</dd><dt><code>datetime_format</code>
+<dd>
+<p>Date and time format. Default value is &#39;%Y-%m-%d %H:%M:%S&#39;.</p>
+</dd><dt><code>shift_period_suffix</code>
+<dd>
+<p>The log file suffix format for <code>daily</code>, <code>weekly</code> or <code>monthly</code> rotation. Default is &#39;%Y%m%d&#39;.</p>
+</dd></dl>
+
+<h3 id="method-c-new-label-Description">Description<span><a href="#method-c-new-label-Description">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Create an instance.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 376</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-identifier">shift_age</span> = <span class="ruby-value">0</span>, <span class="ruby-identifier">shift_size</span> = <span class="ruby-value">1048576</span>, <span class="ruby-value">level:</span> <span class="ruby-constant">DEBUG</span>,
+               <span class="ruby-value">progname:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">formatter:</span> <span class="ruby-keyword">nil</span>, <span class="ruby-value">datetime_format:</span> <span class="ruby-keyword">nil</span>,
+               <span class="ruby-value">shift_period_suffix:</span> <span class="ruby-string">&#39;%Y%m%d&#39;</span>)
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-identifier">level</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">progname</span> = <span class="ruby-identifier">progname</span>
+  <span class="ruby-ivar">@default_formatter</span> = <span class="ruby-constant">Formatter</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">datetime_format</span> = <span class="ruby-identifier">datetime_format</span>
+  <span class="ruby-keyword">self</span>.<span class="ruby-identifier">formatter</span> = <span class="ruby-identifier">formatter</span>
+  <span class="ruby-ivar">@logdev</span> = <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">logdev</span>
+    <span class="ruby-ivar">@logdev</span> = <span class="ruby-constant">LogDevice</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">logdev</span>, <span class="ruby-value">:shift_age</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">shift_age</span>,
+      <span class="ruby-value">:shift_size</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">shift_size</span>,
+      <span class="ruby-value">:shift_period_suffix</span> <span class="ruby-operator">=&gt;</span> <span class="ruby-identifier">shift_period_suffix</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-3C-3C" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">&lt;&lt;</span><span
+            class="method-args">(msg)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Dump given message to the log device without any formatting.  If no log device exists, return <code>nil</code>.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="3C-3C-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 480</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">&lt;&lt;</span>(<span class="ruby-identifier">msg</span>)
+  <span class="ruby-ivar">@logdev</span>&amp;.<span class="ruby-identifier">write</span>(<span class="ruby-identifier">msg</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-add" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            Logger#add(severity, message = nil, progname = nil) { ... }
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <h3 id="method-i-add-label-Args">Args<span><a href="#method-i-add-label-Args">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<dl class="rdoc-list note-list"><dt><code>severity</code>
+<dd>
+<p><a href="Logger/Severity.html"><code>Severity</code></a>.  Constants are defined in <a href="Logger.html"><code>Logger</code></a> namespace: <code>DEBUG</code>, <code>INFO</code>, <code>WARN</code>, <code>ERROR</code>, <code>FATAL</code>, or <code>UNKNOWN</code>.</p>
+</dd><dt><code>message</code>
+<dd>
+<p>The log message.  A String or Exception.</p>
+</dd><dt><code>progname</code>
+<dd>
+<p>Program name string.  Can be omitted.  Treated as a message if no <code>message</code> and <code>block</code> are given.</p>
+</dd><dt><code>block</code>
+<dd>
+<p>Can be omitted.  Called to get a message string if <code>message</code> is nil.</p>
+</dd></dl>
+
+<h3 id="method-i-add-label-Return">Return<span><a href="#method-i-add-label-Return">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>When the given severity is not high enough (for this particular logger), log no message, and return <code>true</code>.</p>
+
+<h3 id="method-i-add-label-Description">Description<span><a href="#method-i-add-label-Description">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Log a message if the given severity is high enough.  This is the generic logging method.  Users will be more inclined to use <a href="Logger.html#method-i-debug"><code>debug</code></a>, <a href="Logger.html#method-i-info"><code>info</code></a>, <a href="Logger.html#method-i-warn"><code>warn</code></a>, <a href="Logger.html#method-i-error"><code>error</code></a>, and <a href="Logger.html#method-i-fatal"><code>fatal</code></a>.</p>
+
+<p><strong>Message format</strong>: <code>message</code> can be any object, but it has to be converted to a String in order to log it.  Generally, <code>inspect</code> is used if the given object is not a String. A special case is an <code>Exception</code> object, which will be printed in detail, including message, class, and backtrace.  See msg2str for the implementation if required.</p>
+
+<h3 id="method-i-add-label-Bugs">Bugs<span><a href="#method-i-add-label-Bugs">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<ul><li>
+<p>Logfile is not locked.</p>
+</li><li>
+<p>Append open does not need to lock file.</p>
+</li><li>
+<p>If the OS supports multi I/O, records possibly may be mixed.</p>
+</li></ul>
+          
+          
+
+          
+          <div class="method-source-code" id="add-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 454</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">add</span>(<span class="ruby-identifier">severity</span>, <span class="ruby-identifier">message</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-identifier">severity</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">UNKNOWN</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@logdev</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-keyword">or</span> <span class="ruby-identifier">severity</span> <span class="ruby-operator">&lt;</span> <span class="ruby-ivar">@level</span>
+    <span class="ruby-keyword">return</span> <span class="ruby-keyword">true</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">progname</span>.<span class="ruby-identifier">nil?</span>
+    <span class="ruby-identifier">progname</span> = <span class="ruby-ivar">@progname</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">message</span>.<span class="ruby-identifier">nil?</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+      <span class="ruby-identifier">message</span> = <span class="ruby-keyword">yield</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">message</span> = <span class="ruby-identifier">progname</span>
+      <span class="ruby-identifier">progname</span> = <span class="ruby-ivar">@progname</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-ivar">@logdev</span>.<span class="ruby-identifier">write</span>(
+    <span class="ruby-identifier">format_message</span>(<span class="ruby-identifier">format_severity</span>(<span class="ruby-identifier">severity</span>), <span class="ruby-constant">Time</span>.<span class="ruby-identifier">now</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-identifier">message</span>))
+  <span class="ruby-keyword">true</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+        <div class="aliases">
+          Also aliased as: <a href="Logger.html#method-i-log">log</a>
+        </div>
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-close" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">close</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Close the logging device.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="close-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 567</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">close</span>
+  <span class="ruby-ivar">@logdev</span>&amp;.<span class="ruby-identifier">close</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-datetime_format" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">datetime_format</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns the date format being used.  See <a href="Logger.html#method-i-datetime_format-3D"><code>datetime_format=</code></a></p>
+          
+          
+
+          
+          <div class="method-source-code" id="datetime_format-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 284</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">datetime_format</span>
+  <span class="ruby-ivar">@default_formatter</span>.<span class="ruby-identifier">datetime_format</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-datetime_format-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">datetime_format=</span><span
+            class="method-args">(datetime_format)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Set date-time format.</p>
+<dl class="rdoc-list note-list"><dt><code>datetime_format</code>
+<dd>
+<p>A string suitable for passing to <code>strftime</code>.</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="datetime_format-3D-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 279</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">datetime_format=</span>(<span class="ruby-identifier">datetime_format</span>)
+  <span class="ruby-ivar">@default_formatter</span>.<span class="ruby-identifier">datetime_format</span> = <span class="ruby-identifier">datetime_format</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-debug" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">debug</span><span
+            class="method-args">(progname = nil, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Log a <code>DEBUG</code> message.</p>
+
+<p>See <a href="Logger.html#method-i-info"><code>info</code></a> for more information.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="debug-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 489</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">debug</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">DEBUG</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-debug-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">debug!</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets the severity to DEBUG.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="debug-21-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 310</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">debug!</span>; <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">DEBUG</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-debug-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">debug?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> iff the current severity level allows for the printing of <code>DEBUG</code> messages.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="debug-3F-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 307</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">debug?</span>; <span class="ruby-ivar">@level</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-constant">DEBUG</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-error" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">error</span><span
+            class="method-args">(progname = nil, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Log an <code>ERROR</code> message.</p>
+
+<p>See <a href="Logger.html#method-i-info"><code>info</code></a> for more information.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="error-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 541</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">error</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">ERROR</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-error-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">error!</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets the severity to ERROR.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="error-21-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 331</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">error!</span>; <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">ERROR</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-error-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">error?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> iff the current severity level allows for the printing of <code>ERROR</code> messages.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="error-3F-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 328</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">error?</span>; <span class="ruby-ivar">@level</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-constant">ERROR</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-fatal" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">fatal</span><span
+            class="method-args">(progname = nil, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Log a <code>FATAL</code> message.</p>
+
+<p>See <a href="Logger.html#method-i-info"><code>info</code></a> for more information.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="fatal-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 550</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">fatal</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">FATAL</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-fatal-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">fatal!</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets the severity to FATAL.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="fatal-21-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 338</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">fatal!</span>; <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">FATAL</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-fatal-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">fatal?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> iff the current severity level allows for the printing of <code>FATAL</code> messages.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="fatal-3F-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 335</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">fatal?</span>; <span class="ruby-ivar">@level</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-constant">FATAL</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-info" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            info(message)
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            info(progname, &amp;block)
+          </span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <p>Log an <code>INFO</code> message.</p>
+<dl class="rdoc-list note-list"><dt><code>message</code>
+<dd>
+<p>The message to log; does not need to be a String.</p>
+</dd><dt><code>progname</code>
+<dd>
+<p>In the block form, this is the <a href="Logger.html#attribute-i-progname"><code>progname</code></a> to use in the log message.  The default can be set with <a href="Logger.html#attribute-i-progname"><code>progname=</code></a>.</p>
+</dd><dt><code>block</code>
+<dd>
+<p>Evaluates to the message to log.  This is not evaluated unless the logger&#39;s level is sufficient to log the message.  This allows you to create potentially expensive logging messages that are only called when the logger is configured to show them.</p>
+</dd></dl>
+
+<h3 id="method-i-info-label-Examples">Examples<span><a href="#method-i-info-label-Examples">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre class="ruby"><span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span>(<span class="ruby-string">&quot;MainApp&quot;</span>) { <span class="ruby-node">&quot;Received connection from #{ip}&quot;</span> }
+<span class="ruby-comment"># ...</span>
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span> <span class="ruby-string">&quot;Waiting for input from user&quot;</span>
+<span class="ruby-comment"># ...</span>
+<span class="ruby-identifier">logger</span>.<span class="ruby-identifier">info</span> { <span class="ruby-node">&quot;User typed #{input}&quot;</span> }
+</pre>
+
+<p>You&#39;ll probably stick to the second form above, unless you want to provide a program name (which you can do with <a href="Logger.html#attribute-i-progname"><code>progname=</code></a> as well).</p>
+
+<h3 id="method-i-info-label-Return">Return<span><a href="#method-i-info-label-Return">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>See <a href="Logger.html#method-i-add"><code>add</code></a>.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="info-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 523</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">info</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">INFO</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-info-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">info!</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets the severity to INFO.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="info-21-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 317</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">info!</span>; <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">INFO</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-info-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">info?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> iff the current severity level allows for the printing of <code>INFO</code> messages.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="info-3F-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 314</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">info?</span>; <span class="ruby-ivar">@level</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-constant">INFO</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-level-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">level=</span><span
+            class="method-args">(severity)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Set logging severity threshold.</p>
+<dl class="rdoc-list note-list"><dt><code>severity</code>
+<dd>
+<p>The <a href="Logger/Severity.html"><code>Severity</code></a> of the log message.</p>
+</dd></dl>
+          
+          
+
+          
+          <div class="method-source-code" id="level-3D-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 250</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">level=</span>(<span class="ruby-identifier">severity</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">severity</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">Integer</span>)
+    <span class="ruby-ivar">@level</span> = <span class="ruby-identifier">severity</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-keyword">case</span> <span class="ruby-identifier">severity</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">downcase</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;debug&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">DEBUG</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;info&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">INFO</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;warn&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">WARN</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;error&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">ERROR</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;fatal&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">FATAL</span>
+    <span class="ruby-keyword">when</span> <span class="ruby-string">&#39;unknown&#39;</span>
+      <span class="ruby-ivar">@level</span> = <span class="ruby-constant">UNKNOWN</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">raise</span> <span class="ruby-constant">ArgumentError</span>, <span class="ruby-node">&quot;invalid log level: #{severity}&quot;</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+        <div class="aliases">
+          Also aliased as: <a href="Logger.html#method-i-sev_threshold-3D">sev_threshold=</a>
+        </div>
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-log" class="method-detail method-alias">
+        
+        <div class="method-heading">
+          <span class="method-name">log</span><span
+            class="method-args">(severity, message = nil, progname = nil)</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+        </div>
+
+        
+
+        
+        <div class="aliases">
+          Alias for: <a href="Logger.html#method-i-add">add</a>
+        </div>
+        
+      </div>
+
+    
+      <div id="method-i-reopen" class="method-detail ">
+        
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            Logger#reopen
+          </span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+        <div class="method-heading">
+          <span class="method-callseq">
+            Logger#reopen(logdev)
+          </span>
+          
+        </div>
+        
+        
+
+        <div class="method-description">
+          
+          <h3 id="method-i-reopen-label-Args">Args<span><a href="#method-i-reopen-label-Args">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<dl class="rdoc-list note-list"><dt><code>logdev</code>
+<dd>
+<p>The log device.  This is a filename (String) or IO object (typically <code>STDOUT</code>, <code>STDERR</code>, or an open file).  reopen the same filename if it is <code>nil</code>, do nothing for IO.  Default is <code>nil</code>.</p>
+</dd></dl>
+
+<h3 id="method-i-reopen-label-Description">Description<span><a href="#method-i-reopen-label-Description">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<p>Reopen a log device.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="reopen-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 408</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">reopen</span>(<span class="ruby-identifier">logdev</span> = <span class="ruby-keyword">nil</span>)
+  <span class="ruby-ivar">@logdev</span>.<span class="ruby-identifier">reopen</span>(<span class="ruby-identifier">logdev</span>)
+  <span class="ruby-keyword">self</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-sev_threshold-3D" class="method-detail method-alias">
+        
+        <div class="method-heading">
+          <span class="method-name">sev_threshold=</span><span
+            class="method-args">(severity)</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+          
+
+          
+        </div>
+
+        
+
+        
+        <div class="aliases">
+          Alias for: <a href="Logger.html#method-i-level-3D">level=</a>
+        </div>
+        
+      </div>
+
+    
+      <div id="method-i-unknown" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">unknown</span><span
+            class="method-args">(progname = nil, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Log an <code>UNKNOWN</code> message.  This will be printed no matter what the logger&#39;s level is.</p>
+
+<p>See <a href="Logger.html#method-i-info"><code>info</code></a> for more information.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="unknown-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 560</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">unknown</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">UNKNOWN</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-warn" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">warn</span><span
+            class="method-args">(progname = nil, &amp;block)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Log a <code>WARN</code> message.</p>
+
+<p>See <a href="Logger.html#method-i-info"><code>info</code></a> for more information.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="warn-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 532</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">warn</span>(<span class="ruby-identifier">progname</span> = <span class="ruby-keyword">nil</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+  <span class="ruby-identifier">add</span>(<span class="ruby-constant">WARN</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-identifier">progname</span>, <span class="ruby-operator">&amp;</span><span class="ruby-identifier">block</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-warn-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">warn!</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Sets the severity to WARN.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="warn-21-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 324</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">warn!</span>; <span class="ruby-keyword">self</span>.<span class="ruby-identifier">level</span> = <span class="ruby-constant">WARN</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-warn-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">warn?</span><span
+            class="method-args">()</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Returns <code>true</code> iff the current severity level allows for the printing of <code>WARN</code> messages.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="warn-3F-source">
+            <pre><span class="ruby-comment"># File lib/logger.rb, line 321</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">warn?</span>; <span class="ruby-ivar">@level</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-constant">WARN</span>; <span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.1.1.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
