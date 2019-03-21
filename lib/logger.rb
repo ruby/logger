@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 # logger.rb - simple logging utility
 # Copyright (C) 2000-2003, 2005, 2008, 2011  NAKAMURA, Hiroshi <nahi@ruby-lang.org>.
 #
