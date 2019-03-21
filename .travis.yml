@@ -12,6 +12,5 @@ matrix:
     - rvm: ruby-head
   allow_failures:
     - rvm: 2.3
-    - os: osx
 
 script: rake test
