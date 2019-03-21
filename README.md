@@ -51,12 +51,12 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Advanced Development Tips
 
-### Run tests that defined on a specific line
+### Filter test method names
 
-`--location` option is available as:
+`--name` option is available as:
 
 ```
-ruby test/logger/test_logger.rb --location 40
+ruby test/logger/test_logger.rb --name test_lshift
 ```
 
 ## Contributing
