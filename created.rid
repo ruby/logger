@@ -1,10 +1,10 @@
-Fri, 22 Mar 2019 04:43:54 +0900
-README.md	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/errors.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/period.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/version.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/log_device.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/severity.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger/formatter.rb	Fri, 22 Mar 2019 04:38:50 +0900
-lib/logger.rb	Fri, 22 Mar 2019 04:38:50 +0900
-LICENSE.txt	Fri, 22 Mar 2019 04:38:50 +0900
+Fri, 22 Mar 2019 05:06:43 +0900
+README.md	Fri, 22 Mar 2019 05:05:42 +0900
+lib/logger/errors.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger/period.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger/version.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger/log_device.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger/severity.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger/formatter.rb	Fri, 22 Mar 2019 05:02:43 +0900
+lib/logger.rb	Fri, 22 Mar 2019 05:02:43 +0900
+LICENSE.txt	Fri, 22 Mar 2019 05:02:43 +0900

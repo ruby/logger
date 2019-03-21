@@ -62,8 +62,10 @@
     <li><a href="#label-Usage">Usage</a>
     <li><a href="#label-Simple+Example">Simple Example</a>
     <li><a href="#label-Development">Development</a>
-    <li><a href="#label-Advanced+Development+Tips">Advanced Development Tips</a>
-    <li><a href="#label-Filter+test+method+names">Filter test method names</a>
+    <li><a href="#label-Advanced+Development">Advanced Development</a>
+    <li><a href="#label-Run+tests+of+a+specific+file">Run tests of a specific file</a>
+    <li><a href="#label-Run+tests+filtering+test+methods+by+a+name">Run tests filtering test methods by a name</a>
+    <li><a href="#label-Publish+documents+to+GitHub+Pages">Publish documents to GitHub Pages</a>
     <li><a href="#label-Contributing">Contributing</a>
     <li><a href="#label-License">License</a>
   </ul>
@@ -139,17 +141,41 @@
 
 <h2 id="label-Development">Development<span><a href="#label-Development">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
-<p>After checking out the repo, run <code>bin/setup</code> to install dependencies. Then, run <code>rake test</code> to run the tests. You can also run <code>bin/console</code> for an interactive prompt that will allow you to experiment.</p>
+<p>After checking out the repo, run the following to install dependencies.</p>
 
-<p>To install this gem onto your local machine, run <code>bundle exec rake install</code>. To release a new version, update the version number in <code>lib/logger/version.rb</code>, and then run <code>bundle exec rake release</code>, which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p>
+<pre>$ bin/setup</pre>
 
-<h2 id="label-Advanced+Development+Tips">Advanced Development Tips<span><a href="#label-Advanced+Development+Tips">&para;</a> <a href="#top">&uarr;</a></span></h2>
+<p>Then, run the tests as:</p>
 
-<h3 id="label-Filter+test+method+names">Filter test method names<span><a href="#label-Filter+test+method+names">&para;</a> <a href="#top">&uarr;</a></span></h3>
+<pre>$ rake test</pre>
+
+<p>To install this gem onto your local machine, run</p>
+
+<pre>$ rake install</pre>
+
+<p>To release a new version, update the version number in <code>lib/logger/version.rb</code>, and then run</p>
+
+<pre>$ rake release</pre>
+
+<p>which will create a git tag for the version, push git commits and tags, and push the <code>.gem</code> file to <a href="https://rubygems.org">rubygems.org</a>.</p>
+
+<h2 id="label-Advanced+Development">Advanced Development<span><a href="#label-Advanced+Development">&para;</a> <a href="#top">&uarr;</a></span></h2>
+
+<h3 id="label-Run+tests+of+a+specific+file">Run tests of a specific file<span><a href="#label-Run+tests+of+a+specific+file">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>$ ruby test/logger/test_logger.rb</pre>
+
+<h3 id="label-Run+tests+filtering+test+methods+by+a+name">Run tests filtering test methods by a name<span><a href="#label-Run+tests+filtering+test+methods+by+a+name">&para;</a> <a href="#top">&uarr;</a></span></h3>
 
 <p><code>--name</code> option is available as:</p>
 
-<pre>ruby test/logger/test_logger.rb --name test_lshift</pre>
+<pre>$ ruby test/logger/test_logger.rb --name test_lshift</pre>
+
+<h3 id="label-Publish+documents+to+GitHub+Pages">Publish documents to GitHub Pages<span><a href="#label-Publish+documents+to+GitHub+Pages">&para;</a> <a href="#top">&uarr;</a></span></h3>
+
+<pre>$ rake gh-pages</pre>
+
+<p>Then, git commit and push the generated HTMLs onto <code>gh-pages</code> branch.</p>
 
 <h2 id="label-Contributing">Contributing<span><a href="#label-Contributing">&para;</a> <a href="#top">&uarr;</a></span></h2>
 
