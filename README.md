@@ -45,18 +45,46 @@ Or install it yourself as:
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run the following to install dependencies.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `lib/logger/version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```
+$ bin/setup
+```
 
-## Advanced Development Tips
+Then, run the tests as:
 
-### Filter test method names
+```
+$ rake test
+```
+
+To install this gem onto your local machine, run
+
+```
+$ rake install
+```
+
+To release a new version, update the version number in `lib/logger/version.rb`, and then run
+
+```
+$ rake release
+```
+
+which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+
+## Advanced Development
+
+### Run tests of a specific file
+
+```
+$ ruby test/logger/test_logger.rb
+```
+
+### Run tests filtering test methods by a name
 
 `--name` option is available as:
 
 ```
-ruby test/logger/test_logger.rb --name test_lshift
+$ ruby test/logger/test_logger.rb --name test_lshift
 ```
 
 ## Contributing
