@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # logger.rb - simple logging utility
-# Copyright (C) 2000-2003, 2005, 2008, 2011  NAKAMURA, Hiroshi <nahi@ruby-lang.org>.
+# Copyright (C) 2000-2003, 2005, 2008, 2011 NAKAMURA, Hiroshi <nahi@ruby-lang.org>.
 #
 # Documentation:: NAKAMURA, Hiroshi and Gavin Sinclair
 # License::
@@ -17,6 +17,7 @@ require_relative 'logger/formatter'
 require_relative 'logger/log_device'
 require_relative 'logger/severity'
 require_relative 'logger/errors'
+require_relative 'logger/buffer'
 
 # == Description
 #
@@ -462,9 +463,9 @@ class Logger
     if message.nil?
       if block_given?
         if block.arity > 0
-          buffer = StringIO.new
+          buffer = Buffer.new
           yield buffer
-          message = buffer.string
+          message = buffer.io.string
         else
           message = yield
         end
