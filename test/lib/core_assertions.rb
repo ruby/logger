@@ -1,36 +1,43 @@
 # frozen_string_literal: true
-require 'test/unit'
-require 'pp'
-require_relative 'envutil'
 
 module Test
   module Unit
-    module Assertions
+    module CoreAssertions
+      if defined?(MiniTest)
+        require_relative '../../envutil'
+        # for ruby core testing
+        include MiniTest::Assertions
+      else
+        require 'pp'
+        require_relative 'envutil'
+        include Test::Unit::Assertions
+
+        def _assertions= n # :nodoc:
+          @_assertions = n
+        end
+
+        def _assertions # :nodoc:
+          @_assertions ||= 0
+        end
+
+        ##
+        # Returns a proc that will output +msg+ along with the default message.
+
+        def message msg = nil, ending = nil, &default
+          proc {
+            msg = msg.call.chomp(".") if Proc === msg
+            custom_message = "#{msg}.\n" unless msg.nil? or msg.to_s.empty?
+            "#{custom_message}#{default.call}#{ending || "."}"
+          }
+        end
+      end
+
       def mu_pp(obj) #:nodoc:
         obj.pretty_inspect.chomp
       end
 
-      def _assertions= n # :nodoc:
-        @_assertions = n
-      end
-
-      def _assertions # :nodoc:
-        @_assertions ||= 0
-      end
-
       def assert_file
         AssertFile
-      end
-
-      ##
-      # Returns a proc that will output +msg+ along with the default message.
-
-      def message msg = nil, ending = nil, &default
-        proc {
-          msg = msg.call.chomp(".") if Proc === msg
-          custom_message = "#{msg}.\n" unless msg.nil? or msg.to_s.empty?
-          "#{custom_message}#{default.call}#{ending || "."}"
-        }
       end
 
       FailDesc = proc do |status, message = "", out = ""|
@@ -69,7 +76,7 @@ module Test
       end
 
       def assert_in_out_err(args, test_stdin = "", test_stdout = [], test_stderr = [], message = nil,
-        success: nil, **opt)
+                            success: nil, **opt)
         args = Array(args).dup
         args.insert((Hash === args[0] ? 1 : 0), '--disable=gems')
         stdout, stderr, status = EnvUtil.invoke_ruby(args, test_stdin, true, true, **opt)
@@ -117,7 +124,7 @@ module Test
         end
         src = <<eom
 # -*- coding: #{line += __LINE__; src.encoding}; -*-
-  require #{(__dir__ + "/assertions").dump};include Test::Unit::Assertions
+  require "test/unit";include Test::Unit::Assertions;require #{(__dir__ + "/core_assertions").dump};include Test::Unit::CoreAssertions
   END {
     puts [Marshal.dump($!)].pack('m'), "assertions=\#{self._assertions}"
   }
@@ -160,7 +167,7 @@ eom
       end
 
       class << (AssertFile = Struct.new(:failure_message).new)
-        include Assertions
+        include CoreAssertions
         def assert_file_predicate(predicate, *args)
           if /\Anot_/ =~ predicate
             predicate = $'
@@ -229,6 +236,7 @@ eom
         assert(all.pass?, message(msg) {all.message.chomp(".")})
       end
       alias all_assertions assert_all_assertions
+
     end
   end
 end

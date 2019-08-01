@@ -45,7 +45,7 @@ module EnvUtil
   RUBYLIB = ENV["RUBYLIB"]
 
   class << self
-    attr_accessor :subprocess_timeout_scale
+    attr_accessor :timeout_scale
     attr_reader :original_internal_encoding, :original_external_encoding,
                 :original_verbose
 
@@ -57,13 +57,55 @@ module EnvUtil
   end
 
   def apply_timeout_scale(t)
-    if scale = EnvUtil.subprocess_timeout_scale
+    if scale = EnvUtil.timeout_scale
       t * scale
     else
       t
     end
   end
   module_function :apply_timeout_scale
+
+  def timeout(sec, klass = nil, message = nil, &blk)
+    return yield(sec) if sec == nil or sec.zero?
+    sec = apply_timeout_scale(sec)
+    Timeout.timeout(sec, klass, message, &blk)
+  end
+  module_function :timeout
+
+  def terminate(pid, signal = :TERM, pgroup = nil, reprieve = 1)
+    reprieve = apply_timeout_scale(reprieve) if reprieve
+
+    signals = Array(signal).select do |sig|
+      DEFAULT_SIGNALS[sig.to_s] or
+        DEFAULT_SIGNALS[Signal.signame(sig)] rescue false
+    end
+    signals |= [:ABRT, :KILL]
+    case pgroup
+    when 0, true
+      pgroup = -pid
+    when nil, false
+      pgroup = pid
+    end
+    while signal = signals.shift
+      begin
+        Process.kill signal, pgroup
+      rescue Errno::EINVAL
+        next
+      rescue Errno::ESRCH
+        break
+      end
+      if signals.empty? or !reprieve
+        Process.wait(pid)
+      else
+        begin
+          Timeout.timeout(reprieve) {Process.wait(pid)}
+        rescue Timeout::Error
+        end
+      end
+    end
+    $?
+  end
+  module_function :terminate
 
   def invoke_ruby(args, stdin_data = "", capture_stdout = false, capture_stderr = false,
                   encoding: nil, timeout: 10, reprieve: 1, timeout_error: Timeout::Error,
@@ -72,7 +114,6 @@ module EnvUtil
                   rubybin: EnvUtil.rubybin, precommand: nil,
                   **opt)
     timeout = apply_timeout_scale(timeout)
-    reprieve = apply_timeout_scale(reprieve) if reprieve
 
     in_c, in_p = IO.pipe
     out_p, out_c = IO.pipe if capture_stdout
@@ -108,35 +149,7 @@ module EnvUtil
       if (!th_stdout || th_stdout.join(timeout)) && (!th_stderr || th_stderr.join(timeout))
         timeout_error = nil
       else
-        signals = Array(signal).select do |sig|
-          DEFAULT_SIGNALS[sig.to_s] or
-            DEFAULT_SIGNALS[Signal.signame(sig)] rescue false
-        end
-        signals |= [:ABRT, :KILL]
-        case pgroup = opt[:pgroup]
-        when 0, true
-          pgroup = -pid
-        when nil, false
-          pgroup = pid
-        end
-        while signal = signals.shift
-          begin
-            Process.kill signal, pgroup
-          rescue Errno::EINVAL
-            next
-          rescue Errno::ESRCH
-            break
-          end
-          if signals.empty? or !reprieve
-            Process.wait(pid)
-          else
-            begin
-              Timeout.timeout(reprieve) {Process.wait(pid)}
-            rescue Timeout::Error
-            end
-          end
-        end
-        status = $?
+        status = terminate(pid, signal, opt[:pgroup], reprieve)
       end
       stdout = th_stdout.value if capture_stdout
       stderr = th_stderr.value if capture_stderr && capture_stderr != :merge_to_stdout
