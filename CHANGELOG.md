@@ -1,3 +1,9 @@
+# 1.4.1
+
+Fixes:
+
+* Add missing files in gem (thanks to hsbt)
+
 # 1.4.0
 
 Enhancements:
