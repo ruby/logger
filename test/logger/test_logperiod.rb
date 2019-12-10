@@ -20,8 +20,7 @@ class TestLogPeriod < Test::Unit::TestCase
     next_month = Time.parse("2019-08-1 00:00:00")
     assert_equal(next_month, monthly_result)
 
-    result = Logger::Period.next_rotate_time(time, 'invalid')
-    assert_equal(time, result)
+    assert_raise(ArgumentError) { Logger::Period.next_rotate_time(time, 'invalid') }
   end
 
   def test_next_rotate_time_extreme_cases
@@ -40,8 +39,7 @@ class TestLogPeriod < Test::Unit::TestCase
     next_month = Time.parse("2018-08-1 00:00:00")
     assert_equal(next_month, monthly_result)
 
-    result = Logger::Period.next_rotate_time(time, 'invalid')
-    assert_equal(time, result)
+    assert_raise(ArgumentError) { Logger::Period.next_rotate_time(time, 'invalid') }
   end
 
   def test_previous_period_end
@@ -59,8 +57,7 @@ class TestLogPeriod < Test::Unit::TestCase
     month_ago = Time.parse("2019-06-30 23:59:59")
     assert_equal(month_ago, monthly_result)
 
-    result = Logger::Period.previous_period_end(time, 'invalid')
-    assert_equal(time, result)
+    assert_raise(ArgumentError) { Logger::Period.next_rotate_time(time, 'invalid') }
   end
 
   def test_previous_period_end_extreme_cases
@@ -79,7 +76,6 @@ class TestLogPeriod < Test::Unit::TestCase
     month_ago = Time.parse("2018-06-30 23:59:59")
     assert_equal(month_ago, monthly_result)
 
-    result = Logger::Period.previous_period_end(time, 'invalid')
-    assert_equal(time, result)
+    assert_raise(ArgumentError) { Logger::Period.next_rotate_time(time, 'invalid') }
   end
 end
