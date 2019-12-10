@@ -1,3 +1,9 @@
+# 1.4.2
+
+* Document that shift_age of 0 disables log file rotation [#43](https://github.com/ruby/logger/pull/43) (thanks to jeremyevans)
+* Raise ArgumentError for invalid shift_age [#42](https://github.com/ruby/logger/pull/42) (thanks to jeremyevans)
+* Honor Logger#level overrides [#41](https://github.com/ruby/logger/pull/41) (thanks to georgeclaghorn)
+
 # 1.4.1
 
 Fixes:
