@@ -41,7 +41,7 @@ Or install it yourself as:
 
     # Create a Logger that prints to STDERR
     error_log = Logger.new(STDERR)
-    error_log = Logger.error("fatal error")
+    error_log = error_log.error("fatal error")
 
 ## Development
 
