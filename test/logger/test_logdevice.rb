@@ -205,6 +205,83 @@ class TestLogDevice < Test::Unit::TestCase
     end
   end
 
+  def test_shifting_size_with_reopen
+    tmpfile = Tempfile.new([File.basename(__FILE__, '.*'), '_1.log'])
+    logfile = tmpfile.path
+    logfile0 = logfile + '.0'
+    logfile1 = logfile + '.1'
+    logfile2 = logfile + '.2'
+    logfile3 = logfile + '.3'
+    tmpfile.close(true)
+    File.unlink(logfile) if File.exist?(logfile)
+    File.unlink(logfile0) if File.exist?(logfile0)
+    File.unlink(logfile1) if File.exist?(logfile1)
+    File.unlink(logfile2) if File.exist?(logfile2)
+
+    logger = Logger.new(STDERR)
+    logger.reopen(logfile, 4, 100)
+
+    logger.error("0" * 15)
+    assert_file.exist?(logfile)
+    assert_file.not_exist?(logfile0)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile0)
+    assert_file.not_exist?(logfile1)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile1)
+    assert_file.not_exist?(logfile2)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile2)
+    assert_file.not_exist?(logfile3)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile3)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile3)
+    logger.close
+    File.unlink(logfile)
+    File.unlink(logfile0)
+    File.unlink(logfile1)
+    File.unlink(logfile2)
+
+    tmpfile = Tempfile.new([File.basename(__FILE__, '.*'), '_2.log'])
+    logfile = tmpfile.path
+    logfile0 = logfile + '.0'
+    logfile1 = logfile + '.1'
+    logfile2 = logfile + '.2'
+    logfile3 = logfile + '.3'
+    tmpfile.close(true)
+    logger = Logger.new(logfile, 4, 150)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile)
+    assert_file.not_exist?(logfile0)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile0)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile0)
+    assert_file.not_exist?(logfile1)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile1)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile1)
+    assert_file.not_exist?(logfile2)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile2)
+    logger.error("0" * 15)
+    assert_file.exist?(logfile2)
+    assert_file.not_exist?(logfile3)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile3)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile3)
+    logger.error("0" * 15)
+    assert_file.not_exist?(logfile3)
+    logger.close
+    File.unlink(logfile)
+    File.unlink(logfile0)
+    File.unlink(logfile1)
+    File.unlink(logfile2)
+  end
+
   def test_shifting_size
     tmpfile = Tempfile.new([File.basename(__FILE__, '.*'), '_1.log'])
     logfile = tmpfile.path

@@ -17,16 +17,7 @@ class Logger
       @reraise_write_errors = reraise_write_errors
       mon_initialize
       set_dev(log)
-      if @filename
-        @shift_age = shift_age || 7
-        @shift_size = shift_size || 1048576
-        @shift_period_suffix = shift_period_suffix || '%Y%m%d'
-
-        unless @shift_age.is_a?(Integer)
-          base_time = @dev.respond_to?(:stat) ? @dev.stat.mtime : Time.now
-          @next_rotate_time = next_rotate_time(base_time, @shift_age)
-        end
-      end
+      set_file(shift_age, shift_size, shift_period_suffix) if @filename
     end
 
     def write(message)
@@ -50,9 +41,10 @@ class Logger
       end
     end
 
-    def reopen(log = nil)
+    def reopen(log = nil, shift_age: nil, shift_size: nil, shift_period_suffix: nil, binmode: nil)
       # reopen the same filename if no argument, do nothing for IO
       log ||= @filename if @filename
+      @binmode = binmode unless binmode.nil?
       if log
         synchronize do
           if @filename and @dev
@@ -60,6 +52,7 @@ class Logger
             @filename = nil
           end
           set_dev(log)
+          set_file(shift_age, shift_size, shift_period_suffix) if @filename
         end
       end
       self
@@ -89,6 +82,17 @@ class Logger
       else
         @dev = open_logfile(log)
         @filename = log
+      end
+    end
+
+    def set_file(shift_age, shift_size, shift_period_suffix)
+      @shift_age = shift_age.nil? ? @shift_age || 7 : shift_age
+      @shift_size = shift_size.nil? ? @shift_size || 1048576 : shift_size
+      @shift_period_suffix = shift_period_suffix.nil? ? @shift_period_suffix || '%Y%m%d' : shift_period_suffix
+
+      unless @shift_age.is_a?(Integer)
+        base_time = @dev.respond_to?(:stat) ? @dev.stat.mtime : Time.now
+        @next_rotate_time = next_rotate_time(base_time, @shift_age)
       end
     end
 
