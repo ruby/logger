@@ -1,7 +1,5 @@
 # Logger
 
-[![Build Status](https://travis-ci.com/ruby/logger.svg?branch=master)](https://travis-ci.com/ruby/logger)
-
 Logger is a simple but powerful logging utility to output messages in your Ruby program.
 
 Logger has the following features:
