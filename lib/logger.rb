@@ -372,6 +372,10 @@ class Logger
   # +shift_period_suffix+::
   #   The log file suffix format for +daily+, +weekly+ or +monthly+ rotation.
   #   Default is '%Y%m%d'.
+  # +reraise_write_errors+::
+  #   An array of exception classes, which will be reraised if there is an
+  #   error when writing to the log device. The default is to swallow all
+  #   exceptions raised.
   #
   # === Description
   #
@@ -379,7 +383,8 @@ class Logger
   #
   def initialize(logdev, shift_age = 0, shift_size = 1048576, level: DEBUG,
                  progname: nil, formatter: nil, datetime_format: nil,
-                 binmode: false, shift_period_suffix: '%Y%m%d')
+                 binmode: false, shift_period_suffix: '%Y%m%d',
+                 reraise_write_errors: [])
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
@@ -390,7 +395,8 @@ class Logger
       @logdev = LogDevice.new(logdev, shift_age: shift_age,
         shift_size: shift_size,
         shift_period_suffix: shift_period_suffix,
-        binmode: binmode)
+        binmode: binmode,
+        reraise_write_errors: reraise_write_errors)
     end
   end
 
