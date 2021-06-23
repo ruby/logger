@@ -410,8 +410,9 @@ class Logger
   #
   # Reopen a log device.
   #
-  def reopen(logdev = nil)
-    @logdev&.reopen(logdev)
+  def reopen(logdev = nil, shift_age = nil, shift_size = nil, shift_period_suffix: nil, binmode: nil)
+    @logdev&.reopen(logdev, shift_age: shift_age, shift_size: shift_size,
+                    shift_period_suffix: shift_period_suffix, binmode: binmode)
     self
   end
 
