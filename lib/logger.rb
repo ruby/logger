@@ -277,12 +277,12 @@ class Logger
   #
   # +datetime_format+:: A string suitable for passing to +strftime+.
   def datetime_format=(datetime_format)
-    @default_formatter.datetime_format = datetime_format
+    (@formatter || @default_formatter).datetime_format = datetime_format
   end
 
   # Returns the date format being used.  See #datetime_format=
   def datetime_format
-    @default_formatter.datetime_format
+    (@formatter || @default_formatter).datetime_format
   end
 
   # Logging formatter, as a +Proc+ that will take four arguments and

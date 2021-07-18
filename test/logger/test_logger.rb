@@ -123,8 +123,19 @@ class TestLogger < Test::Unit::TestCase
     verbose, $VERBOSE = $VERBOSE, false
     dummy = STDERR
     logger = Logger.new(dummy)
+    # with default formatter
     log = log_add(logger, INFO, "foo")
-    assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\s*\d+ $/, log.datetime)
+    assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d $/, log.datetime)
+    logger.datetime_format = "%d%b%Y@%H:%M:%S"
+    log = log_add(logger, INFO, "foo")
+    assert_match(/^\d\d\w\w\w\d\d\d\d@\d\d:\d\d:\d\d$/, log.datetime)
+    logger.datetime_format = ""
+    log = log_add(logger, INFO, "foo")
+    assert_match(/^$/, log.datetime)
+    # with custom formatter
+    logger.formatter = Class.new(Logger::Formatter).new
+    log = log_add(logger, INFO, "foo")
+    assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d $/, log.datetime)
     logger.datetime_format = "%d%b%Y@%H:%M:%S"
     log = log_add(logger, INFO, "foo")
     assert_match(/^\d\d\w\w\w\d\d\d\d@\d\d:\d\d:\d\d$/, log.datetime)
