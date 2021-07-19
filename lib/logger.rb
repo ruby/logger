@@ -277,12 +277,18 @@ class Logger
   #
   # +datetime_format+:: A string suitable for passing to +strftime+.
   def datetime_format=(datetime_format)
-    (@formatter || @default_formatter).datetime_format = datetime_format
+    formatter = @formatter || @default_formatter
+    return Kernel.warn("Formatter can't set datetime format") unless formatter.respond_to?(:datetime_format=)
+
+    formatter.datetime_format = datetime_format
   end
 
   # Returns the date format being used.  See #datetime_format=
   def datetime_format
-    (@formatter || @default_formatter).datetime_format
+    formatter = @formatter || @default_formatter
+    return Kernel.warn("Formatter can't provide datetime format") unless formatter.respond_to?(:datetime_format)
+
+    formatter.datetime_format
   end
 
   # Logging formatter, as a +Proc+ that will take four arguments and
@@ -383,8 +389,8 @@ class Logger
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
-    self.datetime_format = datetime_format
     self.formatter = formatter
+    self.datetime_format = datetime_format
     @logdev = nil
     if logdev && logdev != File::NULL
       @logdev = LogDevice.new(logdev, shift_age: shift_age,

@@ -133,7 +133,7 @@ class TestLogger < Test::Unit::TestCase
     log = log_add(logger, INFO, "foo")
     assert_match(/^$/, log.datetime)
     # with custom formatter
-    logger.formatter = Class.new(Logger::Formatter).new
+    logger.formatter = Logger::Formatter.new
     log = log_add(logger, INFO, "foo")
     assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\d\d\d\d\d\d $/, log.datetime)
     logger.datetime_format = "%d%b%Y@%H:%M:%S"
@@ -217,6 +217,17 @@ class TestLogger < Test::Unit::TestCase
     assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\s*\d+ $/, log.datetime)
     # config
     logger = Logger.new(STDERR, datetime_format: "%d%b%Y@%H:%M:%S")
+    log = log_add(logger, INFO, "foo")
+    assert_match(/^\d\d\w\w\w\d\d\d\d@\d\d:\d\d:\d\d$/, log.datetime)
+  end
+
+  def test_initialize_with_formatter_and_datetime_format
+    # default
+    logger = Logger.new(STDERR)
+    log = log_add(logger, INFO, "foo")
+    assert_match(/^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\d.\s*\d+ $/, log.datetime)
+    # config
+    logger = Logger.new(STDERR, formatter: Logger::Formatter.new, datetime_format: "%d%b%Y@%H:%M:%S")
     log = log_add(logger, INFO, "foo")
     assert_match(/^\d\d\w\w\w\d\d\d\d@\d\d:\d\d:\d\d$/, log.datetime)
   end
