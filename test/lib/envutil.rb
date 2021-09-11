@@ -47,12 +47,13 @@ module EnvUtil
   class << self
     attr_accessor :timeout_scale
     attr_reader :original_internal_encoding, :original_external_encoding,
-                :original_verbose
+                :original_verbose, :original_warning
 
     def capture_global_values
       @original_internal_encoding = Encoding.default_internal
       @original_external_encoding = Encoding.default_external
       @original_verbose = $VERBOSE
+      @original_warning = defined?(Warning.[]) ? %i[deprecated experimental].to_h {|i| [i, Warning[i]]} : nil
     end
   end
 
@@ -86,7 +87,20 @@ module EnvUtil
     when nil, false
       pgroup = pid
     end
+
+    lldb = true if /darwin/ =~ RUBY_PLATFORM
+
     while signal = signals.shift
+
+      if lldb and [:ABRT, :KILL].include?(signal)
+        lldb = false
+        # sudo -n: --non-interactive
+        # lldb -p: attach
+        #      -o: run command
+        system(*%W[sudo -n lldb -p #{pid} --batch -o bt\ all -o call\ rb_vmdebug_stack_dump_all_threads() -o quit])
+        true
+      end
+
       begin
         Process.kill signal, pgroup
       rescue Errno::EINVAL
@@ -100,6 +114,8 @@ module EnvUtil
         begin
           Timeout.timeout(reprieve) {Process.wait(pid)}
         rescue Timeout::Error
+        else
+          break
         end
       end
     end
@@ -109,7 +125,7 @@ module EnvUtil
 
   def invoke_ruby(args, stdin_data = "", capture_stdout = false, capture_stderr = false,
                   encoding: nil, timeout: 10, reprieve: 1, timeout_error: Timeout::Error,
-                  stdout_filter: nil, stderr_filter: nil,
+                  stdout_filter: nil, stderr_filter: nil, ios: nil,
                   signal: :TERM,
                   rubybin: EnvUtil.rubybin, precommand: nil,
                   **opt)
@@ -125,6 +141,8 @@ module EnvUtil
       out_p.set_encoding(encoding) if out_p
       err_p.set_encoding(encoding) if err_p
     end
+    ios.each {|i, o = i|opt[i] = o} if ios
+
     c = "C"
     child_env = {}
     LANG_ENVS.each {|lc| child_env[lc] = c}
@@ -134,11 +152,14 @@ module EnvUtil
     if RUBYLIB and lib = child_env["RUBYLIB"]
       child_env["RUBYLIB"] = [lib, RUBYLIB].join(File::PATH_SEPARATOR)
     end
+    child_env['ASAN_OPTIONS'] = ENV['ASAN_OPTIONS'] if ENV['ASAN_OPTIONS']
     args = [args] if args.kind_of?(String)
-    pid = spawn(child_env, *precommand, rubybin, *args, **opt)
+    pid = spawn(child_env, *precommand, rubybin, *args, opt)
     in_c.close
-    out_c.close if capture_stdout
-    err_c.close if capture_stderr && capture_stderr != :merge_to_stdout
+    out_c&.close
+    out_c = nil
+    err_c&.close
+    err_c = nil
     if block_given?
       return yield in_p, out_p, err_p, pid
     else
@@ -150,6 +171,7 @@ module EnvUtil
         timeout_error = nil
       else
         status = terminate(pid, signal, opt[:pgroup], reprieve)
+        terminated = Time.now
       end
       stdout = th_stdout.value if capture_stdout
       stderr = th_stderr.value if capture_stderr && capture_stderr != :merge_to_stdout
@@ -161,7 +183,7 @@ module EnvUtil
       if timeout_error
         bt = caller_locations
         msg = "execution of #{bt.shift.label} expired timeout (#{timeout} sec)"
-        msg = Test::Unit::Assertions::FailDesc[status, msg, [stdout, stderr].join("\n")].()
+        msg = failure_description(status, terminated, msg, [stdout, stderr].join("\n"))
         raise timeout_error, msg, bt.map(&:to_s)
       end
       return stdout, stderr, status
@@ -179,11 +201,6 @@ module EnvUtil
   end
   module_function :invoke_ruby
 
-  alias rubyexec invoke_ruby
-  class << self
-    alias rubyexec invoke_ruby
-  end
-
   def verbose_warning
     class << (stderr = "".dup)
       alias write concat
@@ -196,6 +213,7 @@ module EnvUtil
   ensure
     stderr, $stderr = $stderr, stderr
     $VERBOSE = EnvUtil.original_verbose
+    EnvUtil.original_warning&.each {|i, v| Warning[i] = v}
   end
   module_function :verbose_warning
 
@@ -241,7 +259,11 @@ module EnvUtil
 
   def labeled_module(name, &block)
     Module.new do
-      singleton_class.class_eval {define_method(:to_s) {name}; alias inspect to_s}
+      singleton_class.class_eval {
+        define_method(:to_s) {name}
+        alias inspect to_s
+        alias name to_s
+      }
       class_eval(&block) if block
     end
   end
@@ -249,7 +271,11 @@ module EnvUtil
 
   def labeled_class(name, superclass = Object, &block)
     Class.new(superclass) do
-      singleton_class.class_eval {define_method(:to_s) {name}; alias inspect to_s}
+      singleton_class.class_eval {
+        define_method(:to_s) {name}
+        alias inspect to_s
+        alias name to_s
+      }
       class_eval(&block) if block
     end
   end
@@ -286,6 +312,37 @@ module EnvUtil
     end
   end
 
+  def self.failure_description(status, now, message = "", out = "")
+    pid = status.pid
+    if signo = status.termsig
+      signame = Signal.signame(signo)
+      sigdesc = "signal #{signo}"
+    end
+    log = diagnostic_reports(signame, pid, now)
+    if signame
+      sigdesc = "SIG#{signame} (#{sigdesc})"
+    end
+    if status.coredump?
+      sigdesc = "#{sigdesc} (core dumped)"
+    end
+    full_message = ''.dup
+    message = message.call if Proc === message
+    if message and !message.empty?
+      full_message << message << "\n"
+    end
+    full_message << "pid #{pid}"
+    full_message << " exit #{status.exitstatus}" if status.exited?
+    full_message << " killed by #{sigdesc}" if sigdesc
+    if out and !out.empty?
+      full_message << "\n" << out.b.gsub(/^/, '| ')
+      full_message.sub!(/(?<!\n)\z/, "\n")
+    end
+    if log
+      full_message << "Diagnostic reports:\n" << log.b.gsub(/^/, '| ')
+    end
+    full_message
+  end
+
   def self.gc_stress_to_class?
     unless defined?(@gc_stress_to_class)
       _, _, status = invoke_ruby(["-e""exit GC.respond_to?(:add_stress_to_class)"])
@@ -304,7 +361,6 @@ if defined?(RbConfig)
     end
     dir = File.dirname(ruby)
     CONFIG['bindir'] = dir
-    Gem::ConfigMap[:bindir] = dir if defined?(Gem::ConfigMap)
   end
 end
 
