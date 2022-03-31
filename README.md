@@ -29,17 +29,19 @@ Or install it yourself as:
 
 ### Simple Example
 
-    require 'logger'
+```ruby
+require 'logger'
 
-    # Create a Logger that prints to STDOUT
-    log = Logger.new(STDOUT)
-    log.debug("Created Logger")
+# Create a Logger that prints to STDOUT
+log = Logger.new(STDOUT)
+log.debug("Created Logger")
 
-    log.info("Program finished")
+log.info("Program finished")
 
-    # Create a Logger that prints to STDERR
-    error_log = Logger.new(STDERR)
-    error_log = error_log.error("fatal error")
+# Create a Logger that prints to STDERR
+error_log = Logger.new(STDERR)
+error_log = error_log.error("fatal error")
+```
 
 ## Development
 
