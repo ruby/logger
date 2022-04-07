@@ -1,3 +1,7 @@
+# Unreleased
+
+* Accept symbols for shift_age (thanks to [@bazay](https://github.com/bazay))
+
 # 1.4.2
 
 * Document that shift_age of 0 disables log file rotation [#43](https://github.com/ruby/logger/pull/43) (thanks to jeremyevans)
