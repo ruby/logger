@@ -13,8 +13,7 @@ class Logger
     end
 
     def call(severity, time, progname, msg)
-      Format % [severity[0, 1], format_datetime(time), Process.pid, severity, progname,
-        msg2str(msg)]
+      sprintf(Format, severity[0, 1], format_datetime(time), Process.pid, severity, progname, msg2str(msg))
     end
 
   private
