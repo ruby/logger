@@ -79,7 +79,8 @@ require_relative 'logger/errors'
 #   logger.unknown('Most severe')
 #
 # When you call any of these methods,
-# the entry may (or may not) be written to the log;
+# the entry may or may not be written to the log,
+# depending on the entry's severity and on the log level;
 # see {Log Level}[rdoc-ref:Logger@Log+Level]
 #
 # An entry always has:
@@ -592,7 +593,7 @@ class Logger
 
   # Sets the logger's output stream:
   #
-  # - If +logdev+ is +nil+, reopens the already-established output stream.
+  # - If +logdev+ is +nil+, reopens the current output stream.
   # - If +logdev+ is a filepath, opens the indicated file for append.
   # - If +logdev+ is an IO stream
   #   (usually <tt>$stdout</tt>, <tt>$stderr</tt>, or an open File object),
@@ -618,8 +619,10 @@ class Logger
     self
   end
 
-  # Creates a log entry (which may or may not be written to the log).
-  # See {Entries}[rdoc-ref:Logger@Entries] for details.
+  # Creates a log entry, which may or may not be written to the log,
+  # depending on the entry's severity and on the log level.
+  # See {Log Level}[rdoc-ref:Logger@Log+Level]
+  # and {Entries}[rdoc-ref:Logger@Entries] for details.
   #
   # Examples:
   #
