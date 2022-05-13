@@ -569,7 +569,7 @@ class Logger
   #   See #datetime_format=.
   # - +binmode+: sets whether the logger writes in binary mode;
   #   default is +false+.
-  #   - shift_period_suffix: sets the format for the filename suffix
+  # - +shift_period_suffix+: sets the format for the filename suffix
   #   for periodic log file rotation; default is <tt>'%Y%m%d'</tt>.
   #   See {Periodic Rotation}[rdoc-ref:Logger@Periodic+Rotation].
   #
