@@ -421,7 +421,7 @@ class Logger
 
   # Sets the date-time format.
   #
-  # Argument +datetime_format should be either of these:
+  # Argument +datetime_format+ should be either of these:
   #
   # - A string suitable for use as a format for method
   # {Time#strftime}[https://docs.ruby-lang.org/en/master/Time.html#method-i-strftime].
