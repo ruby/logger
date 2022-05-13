@@ -424,7 +424,7 @@ class Logger
   # Argument +datetime_format+ should be either of these:
   #
   # - A string suitable for use as a format for method
-  # {Time#strftime}[https://docs.ruby-lang.org/en/master/Time.html#method-i-strftime].
+  #   {Time#strftime}[https://docs.ruby-lang.org/en/master/Time.html#method-i-strftime].
   # - +nil+: the logger uses <tt>'%Y-%m-%dT%H:%M:%S.%6N'</tt>.
   #
   def datetime_format=(datetime_format)
