@@ -512,7 +512,7 @@ class Logger
   #
   def error?; level <= ERROR; end
 
-  # Sets the log level to Logger::ERROR .
+  # Sets the log level to Logger::ERROR.
   # See {Log Level}[rdoc-ref:Logger@Log+Level].
   #
   def error!; self.level = ERROR; end
