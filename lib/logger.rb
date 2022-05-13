@@ -601,21 +601,17 @@ class Logger
   # Example:
   #
   #   logger = Logger.new('t.log')
-  #   logger.add(3)
-  #   logger.add(3)
+  #   logger.add(Logger::ERROR, 'one')
   #   logger.close
-  #   logger.add(3) # Prints 'log writing failed. closed stream'
+  #   logger.add(Logger::ERROR, 'two') # Prints 'log writing failed. closed stream'
   #   logger.reopen
-  #   logger.add(3)
-  #   logger.add(3)
+  #   logger.add(Logger::ERROR, 'three')
   #   logger.close
   #   File.readlines('t.log')
   #   # =>
-  #   ["# Logfile created on 2022-05-12 14:21:19 -0500 by logger.rb/v1.5.0\n",
-  #    "E, [2022-05-12T14:21:27.596726 #22428] ERROR -- : nil\n",
-  #    "E, [2022-05-12T14:21:30.649644 #22428] ERROR -- : nil\n",
-  #    "E, [2022-05-12T14:23:01.353310 #22428] ERROR -- : nil\n",
-  #    "E, [2022-05-12T14:23:05.847241 #22428] ERROR -- : nil\n"]
+  #   # ["# Logfile created on 2022-05-12 14:21:19 -0500 by logger.rb/v1.5.0\n",
+  #   #  "E, [2022-05-12T14:21:27.596726 #22428] ERROR -- : one\n",
+  #   #  "E, [2022-05-12T14:23:05.847241 #22428] ERROR -- : three\n"]
   #
   def reopen(logdev = nil)
     @logdev&.reopen(logdev)
