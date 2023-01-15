@@ -1,3 +1,7 @@
+# HEAD
+
+* Add thread-local log levels using `Logger#with_level` [#84](https://github.com/ruby/logger/issue/84)
+
 # 1.4.2
 
 * Document that shift_age of 0 disables log file rotation [#43](https://github.com/ruby/logger/pull/43) (thanks to jeremyevans)

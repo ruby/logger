@@ -15,5 +15,28 @@ class Logger
     FATAL = 4
     # An unknown message that should always be logged.
     UNKNOWN = 5
+
+    def self.coerce(severity)
+      if severity.is_a?(Integer)
+        severity
+      else
+        case severity.to_s.downcase
+        when 'debug'
+          DEBUG
+        when 'info'
+          INFO
+        when 'warn'
+          WARN
+        when 'error'
+          ERROR
+        when 'fatal'
+          FATAL
+        when 'unknown'
+          UNKNOWN
+        else
+          raise ArgumentError, "invalid log level: #{severity}"
+        end
+      end
+    end
   end
 end
