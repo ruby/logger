@@ -381,7 +381,7 @@ class Logger
 
   # Logging severity threshold (e.g. <tt>Logger::INFO</tt>).
   def level
-    Thread.current[@key] || @level
+    @tll[Thread.current] || @level
   end
 
   # Sets the log level; returns +severity+.
@@ -405,12 +405,12 @@ class Logger
   #   logger.with_level(:debug) do
   #     logger.debug { "Hello" }
   #   end
-  def with_level(severity, &block)
-    current, Thread.current[@key] = level, Severity.coerce(severity)
+  def with_level(severity)
+    current, @tll[Thread.current] = level, Severity.coerce(severity)
     begin
       yield
     ensure
-      Thread.current[@key] = current
+      @tll[Thread.current] = current
     end
   end
 
@@ -580,7 +580,7 @@ class Logger
     self.datetime_format = datetime_format
     self.formatter = formatter
     @logdev = nil
-    @key = "__log_level_#{object_id}"
+    @tll = ObjectSpace::WeakMap.new # thread-local levels
     if logdev && logdev != File::NULL
       @logdev = LogDevice.new(logdev, shift_age: shift_age,
         shift_size: shift_size,
