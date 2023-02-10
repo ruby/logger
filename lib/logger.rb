@@ -381,7 +381,7 @@ class Logger
 
   # Logging severity threshold (e.g. <tt>Logger::INFO</tt>).
   def level
-    @tll[Thread.current] || @level
+    @level_override[Fiber.current] || @level
   end
 
   # Sets the log level; returns +severity+.
@@ -400,20 +400,20 @@ class Logger
     @level = Severity.coerce(severity)
   end
 
-  # Adjust the log level during the block execution for the current Thread only
+  # Adjust the log level during the block execution for the current Fiber only
   #
   #   logger.with_level(:debug) do
   #     logger.debug { "Hello" }
   #   end
   def with_level(severity)
-    prev, @tll[Thread.current] = level, Severity.coerce(severity)
+    prev, @level_override[Fiber.current] = level, Severity.coerce(severity)
     begin
       yield
     ensure
       if prev
-        @tll[Thread.current] = prev
+        @level_override[Fiber.current] = prev
       else
-        @ttl.delete(Thread.current)
+        @level_override.delete(Fiber.current)
       end
     end
   end
@@ -584,7 +584,7 @@ class Logger
     self.datetime_format = datetime_format
     self.formatter = formatter
     @logdev = nil
-    @tll = {} # thread-local levels
+    @level_override = {}
     if logdev && logdev != File::NULL
       @logdev = LogDevice.new(logdev, shift_age: shift_age,
         shift_size: shift_size,
