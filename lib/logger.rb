@@ -406,11 +406,15 @@ class Logger
   #     logger.debug { "Hello" }
   #   end
   def with_level(severity)
-    current, @tll[Thread.current] = level, Severity.coerce(severity)
+    prev, @tll[Thread.current] = level, Severity.coerce(severity)
     begin
       yield
     ensure
-      @tll[Thread.current] = current
+      if prev
+        @tll[Thread.current] = prev
+      else
+        @ttl.delete(Thread.current)
+      end
     end
   end
 
@@ -580,7 +584,7 @@ class Logger
     self.datetime_format = datetime_format
     self.formatter = formatter
     @logdev = nil
-    @tll = ObjectSpace::WeakMap.new # thread-local levels
+    @tll = {} # thread-local levels
     if logdev && logdev != File::NULL
       @logdev = LogDevice.new(logdev, shift_age: shift_age,
         shift_size: shift_size,
