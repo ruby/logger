@@ -1,6 +1,6 @@
 # HEAD
 
-* Add thread-local log levels using `Logger#with_level` [#84](https://github.com/ruby/logger/issue/84)
+* Support fiber-local log levels using `Logger#with_level` [#84](https://github.com/ruby/logger/issue/84)
 
 # 1.4.2
 

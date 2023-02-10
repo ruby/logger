@@ -10,6 +10,7 @@
 #
 # A simple system for logging messages.  See Logger for more documentation.
 
+require 'fiber'
 require 'monitor'
 require 'rbconfig'
 
