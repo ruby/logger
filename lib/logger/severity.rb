@@ -30,8 +30,8 @@ class Logger
       if severity.is_a?(Integer)
         severity
       else
-        k = severity.to_s.downcase
-        LEVELS[k] || raise(ArgumentError, "invalid log level: #{severity}")
+        key = severity.to_s.downcase
+        LEVELS[key] || raise(ArgumentError, "invalid log level: #{severity}")
       end
     end
   end
