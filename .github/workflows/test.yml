@@ -17,8 +17,8 @@ jobs:
         os: [ ubuntu-latest, macos-latest ]
         exclude:
           - { os: windows-latest, ruby: truffleruby }
-          - { os: windows-latest, ruby: truffleruby-head }
           - { os: macos-latest,   ruby: truffleruby }
+          - { ruby: truffleruby-head }
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
