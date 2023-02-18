@@ -6,7 +6,6 @@ jobs:
   ruby-versions:
     uses: ruby/actions/.github/workflows/ruby_versions.yml@master
     with:
-      engine: cruby
       min_version: 2.5
 
   test:
@@ -16,6 +15,10 @@ jobs:
       matrix:
         ruby: ${{ fromJson(needs.ruby-versions.outputs.versions) }}
         os: [ ubuntu-latest, macos-latest ]
+        exclude:
+          - { os: windows-latest, ruby: truffleruby }
+          - { os: windows-latest, ruby: truffleruby-head }
+          - { os: macos-latest,   ruby: truffleruby }
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
