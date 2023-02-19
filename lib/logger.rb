@@ -395,8 +395,6 @@ class Logger
   #   logger.level = 'error'       # => "error"
   #   logger.level = :error        # => :error
   #
-  # Logger#sev_threshold= is an alias for Logger#level=.
-  #
   def level=(severity)
     @level = Severity.coerce(severity)
   end
