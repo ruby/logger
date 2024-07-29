@@ -621,8 +621,9 @@ class Logger
   #   #  "E, [2022-05-12T14:21:27.596726 #22428] ERROR -- : one\n",
   #   #  "E, [2022-05-12T14:23:05.847241 #22428] ERROR -- : three\n"]
   #
-  def reopen(logdev = nil)
-    @logdev&.reopen(logdev)
+  def reopen(logdev = nil, shift_age = nil, shift_size = nil, shift_period_suffix: nil, binmode: nil)
+    @logdev&.reopen(logdev, shift_age: shift_age, shift_size: shift_size,
+                    shift_period_suffix: shift_period_suffix, binmode: binmode)
     self
   end
 
