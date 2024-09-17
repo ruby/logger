@@ -101,4 +101,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/ruby/l
 
 ## License
 
-The gem is available as open source under the terms of the [BSD-2-Clause](LICENSE.txt).
+The gem is available as open source under the terms of the [BSD-2-Clause](BSDL).
