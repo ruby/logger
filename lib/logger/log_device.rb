@@ -17,16 +17,7 @@ class Logger
       @reraise_write_errors = reraise_write_errors
       mon_initialize
       set_dev(log)
-      if @filename
-        @shift_age = shift_age || 7
-        @shift_size = shift_size || 1048576
-        @shift_period_suffix = shift_period_suffix || '%Y%m%d'
-
-        unless @shift_age.is_a?(Integer)
-          base_time = @dev.respond_to?(:stat) ? @dev.stat.mtime : Time.now
-          @next_rotate_time = next_rotate_time(base_time, @shift_age)
-        end
-      end
+      set_shift(shift_age, shift_size, shift_period_suffix)
     end
 
     def write(message)
@@ -76,6 +67,7 @@ class Logger
             @filename = nil
           end
           set_dev(log)
+          set_shift
         end
       end
       self
@@ -96,6 +88,19 @@ class Logger
         @dev.sync = true
         @dev.binmode if @binmode
         @filename = log
+      end
+    end
+
+    def set_shift(shift_age = @shift_age, shift_size = @shift_size, shift_period_suffix = @shift_period_suffix)
+      if @filename
+        @shift_age = shift_age || 7
+        @shift_size = shift_size || 1048576
+        @shift_period_suffix = shift_period_suffix || '%Y%m%d'
+
+        unless @shift_age.is_a?(Integer)
+          base_time = @dev.respond_to?(:stat) ? @dev.stat.mtime : Time.now
+          @next_rotate_time = next_rotate_time(base_time, @shift_age)
+        end
       end
     end
 

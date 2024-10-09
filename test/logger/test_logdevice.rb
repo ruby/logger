@@ -5,6 +5,14 @@ require 'tempfile'
 require 'tmpdir'
 
 class TestLogDevice < Test::Unit::TestCase
+  module LogDeviceAttributes
+    refine Logger::LogDevice do
+      attr_reader :shift_age, :shift_size, :shift_period_suffix, :binmode, :reraise_write_errors
+    end
+  end
+
+  using LogDeviceAttributes
+
   class LogExcnRaiser
     def write(*arg)
       raise 'disk is full'
@@ -140,6 +148,7 @@ class TestLogDevice < Test::Unit::TestCase
     begin
       assert_file.exist?(@filename)
       assert_equal(@filename, logdev.filename)
+      assert_equal(7, logdev.shift_age)
       assert_not_predicate(old_dev, :closed?)
     ensure
       logdev.close
