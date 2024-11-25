@@ -14,7 +14,7 @@ require "rdoc/task"
 RDoc::Task.new do |doc|
   doc.main   = "README.md"
   doc.title  = "Logger -- Ruby Standard Logger"
-  doc.rdoc_files = FileList.new %w[README.md lib LICENSE.txt]
+  doc.rdoc_files = FileList.new %w[README.md lib BSDL COPYING]
   doc.rdoc_dir = "html"
 end
 
