@@ -19,6 +19,7 @@ class TestLogDevice < Test::Unit::TestCase
   end
 
   def setup
+    @top_dir = File.expand_path('../../lib', __dir__)
     @tempfile = Tempfile.new("logger")
     @tempfile.close
     @filename = @tempfile.path
@@ -456,7 +457,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_midnight
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([*%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([*%W"--disable=gems -I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -498,7 +499,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -543,7 +544,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -588,7 +589,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"Europe/London"}, *%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"Europe/London"}, *%W"--disable=gems -I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -627,7 +628,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_separately([{"TZ"=>"Europe/London"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -658,7 +659,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_separately([{"TZ"=>"Europe/London"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -707,7 +708,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_midnight_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([*%W"--disable=gems -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([*%W"--disable=gems -I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -751,7 +752,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -798,7 +799,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly_exist_file
     Dir.mktmpdir do |tmpdir|
-      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_in_out_err([{"TZ"=>"UTC"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -848,7 +849,8 @@ class TestLogDevice < Test::Unit::TestCase
   def run_children(n, args, src)
     r, w = IO.pipe
     [w, *(1..n).map do
-       f = IO.popen([EnvUtil.rubybin, *%w[--disable=gems -rlogger -], *args], "w", err: w)
+       f = IO.popen([EnvUtil.rubybin, *%w[--disable=gems -], *args], "w", err: w)
+       src = "$LOAD_PATH.unshift('#{@top_dir}'); require 'logger';#{src}"
        f.puts(src)
        f
      end].each(&:close)
