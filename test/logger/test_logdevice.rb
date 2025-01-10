@@ -437,7 +437,9 @@ class TestLogDevice < Test::Unit::TestCase
         logdev1.write(message)
         assert_file.identical?(log, logdev1.dev)
         # NOTE: below assertion fails in JRuby 9.3 and TruffleRuby
-        assert_file.identical?(log + ".0", logdev2.dev)
+        unless %w[jruby truffleruby].include? RUBY_ENGINE
+          assert_file.identical?(log + ".0", logdev2.dev)
+        end
 
         logdev2.write(message)
         assert_file.identical?(log, logdev1.dev)
