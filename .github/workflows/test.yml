@@ -6,7 +6,7 @@ jobs:
   ruby-versions:
     uses: ruby/actions/.github/workflows/ruby_versions.yml@master
     with:
-      engine: cruby
+      engine: cruby-truffleruby
       min_version: 2.5
 
   test:
@@ -19,6 +19,10 @@ jobs:
         exclude:
           - ruby: 2.5
             os: macos-latest
+          - ruby: truffleruby
+            os: windows-latest
+          - ruby: truffleruby-head
+            os: windows-latest
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
