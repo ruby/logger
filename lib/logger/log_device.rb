@@ -70,7 +70,12 @@ class Logger
     # :stopdoc:
 
     MODE = File::WRONLY | File::APPEND
-    MODE_TO_OPEN = MODE | File::SHARE_DELETE | File::BINARY
+    # temporary workaround for TruffleRuby
+    if File.const_defined? :SHARE_DELETE
+      MODE_TO_OPEN = MODE | File::SHARE_DELETE | File::BINARY
+    else
+      MODE_TO_OPEN = MODE | File::BINARY
+    end
     MODE_TO_CREATE = MODE_TO_OPEN | File::CREAT | File::EXCL
 
     def set_dev(log)
