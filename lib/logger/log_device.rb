@@ -70,7 +70,7 @@ class Logger
     # :stopdoc:
 
     MODE = File::WRONLY | File::APPEND
-    # temporary workaround for TruffleRuby
+    # TruffleRuby < 24.2 does not have File::SHARE_DELETE
     if File.const_defined? :SHARE_DELETE
       MODE_TO_OPEN = MODE | File::SHARE_DELETE | File::BINARY
     else
