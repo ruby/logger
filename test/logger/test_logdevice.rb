@@ -3,6 +3,7 @@
 require 'logger'
 require 'tempfile'
 require 'tmpdir'
+require 'pathname'
 
 class TestLogDevice < Test::Unit::TestCase
   class LogExcnRaiser
@@ -77,6 +78,20 @@ class TestLogDevice < Test::Unit::TestCase
     ensure
       logdev.close
       File.unlink(tempfile)
+      tempfile.close(true)
+    end
+    # logfile object with Pathname object
+    tempfile = Tempfile.new("logger")
+    pathname = Pathname.new(tempfile.path)
+    logdev = d(pathname)
+    begin
+      logdev.write('world')
+      logfile = File.read(pathname)
+      assert_equal(1, logfile.split(/\n/).size)
+      assert_match(/^world$/, logfile)
+      assert_equal(pathname, logdev.filename)
+    ensure
+      logdev.close
       tempfile.close(true)
     end
   end
