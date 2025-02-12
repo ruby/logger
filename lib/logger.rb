@@ -577,11 +577,14 @@ class Logger
   # - +reraise_write_errors+: An array of exception classes, which will
   #   be reraised if there is an error when writing to the log device.
   #   The default is to swallow all exceptions raised.
+  # - +skip_header+: If +true+, prevents the logger from writing a header
+  #   when creating a new log file. The default is +false+, meaning
+  #   the header will be written as usual.
   #
   def initialize(logdev, shift_age = 0, shift_size = 1048576, level: DEBUG,
                  progname: nil, formatter: nil, datetime_format: nil,
                  binmode: false, shift_period_suffix: '%Y%m%d',
-                 reraise_write_errors: [])
+                 reraise_write_errors: [], skip_header: false)
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
@@ -594,7 +597,8 @@ class Logger
         shift_size: shift_size,
         shift_period_suffix: shift_period_suffix,
         binmode: binmode,
-        reraise_write_errors: reraise_write_errors)
+        reraise_write_errors: reraise_write_errors,
+        skip_header: skip_header)
     end
   end
 
