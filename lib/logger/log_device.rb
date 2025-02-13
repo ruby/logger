@@ -99,6 +99,7 @@ class Logger
     else
       def fixup_mode(dev, filename)
         return dev if @binmode
+        filename = filename.respond_to?(:to_path) ? filename.to_path : filename
         dev.autoclose = false
         old_dev = dev
         dev = File.new(dev.fileno, mode: MODE, path: filename)
