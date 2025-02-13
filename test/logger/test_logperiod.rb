@@ -17,28 +17,28 @@ class TestLogPeriod < Test::Unit::TestCase
   def test_next_rotate_time_dst_begin
     tz = ENV['TZ']
     ENV['TZ'] = 'America/New_York' # 1 hour shift
-    time = Time.new("2025-03-09 00:52:02")
+    time = Time.parse("2025-03-09 00:52:02")
 
     assert_next_rotate_time_words(time, "2025-03-10 00:00:00", ["daily", :daily])
     assert_next_rotate_time_words(time, "2025-03-16 00:00:00", ["weekly", :weekly])
     assert_next_rotate_time_words(time, "2025-04-01 00:00:00", ["monthly", :monthly])
 
     ENV['TZ'] = 'Antarctica/Troll' # 2 hour shift
-    time = Time.new("2025-03-30 00:52:02")
+    time = Time.parse("2025-03-30 00:52:02")
 
     assert_next_rotate_time_words(time, "2025-03-31 00:00:00", ["daily", :daily])
     assert_next_rotate_time_words(time, "2025-04-06 00:00:00", ["weekly", :weekly])
     assert_next_rotate_time_words(time, "2025-04-01 00:00:00", ["monthly", :monthly])
 
     ENV['TZ'] = 'Australia/Lord_Howe' # 30 minute shift
-    time = Time.new("2025-04-06 00:52:02")
+    time = Time.parse("2025-04-06 00:52:02")
 
     assert_next_rotate_time_words(time, "2025-04-07 00:00:00", ["daily", :daily])
     assert_next_rotate_time_words(time, "2025-04-13 00:00:00", ["weekly", :weekly])
     assert_next_rotate_time_words(time, "2025-05-01 00:00:00", ["monthly", :monthly])
 
     ENV['TZ'] = 'Asia/Gaza' # 1 hour shift on Saturday
-    time = Time.new("2025-04-12 00:52:02")
+    time = Time.parse("2025-04-12 00:52:02")
 
     assert_next_rotate_time_words(time, "2025-04-13 00:00:00", ["daily", :daily])
     assert_next_rotate_time_words(time, "2025-04-13 00:00:00", ["weekly", :weekly])
@@ -71,7 +71,7 @@ class TestLogPeriod < Test::Unit::TestCase
     assert_next_rotate_time_words(time, "2025-11-01 00:00:00", ["monthly", :monthly])
 
     ENV['TZ'] = 'Asia/Gaza' # 1 hour shift on Saturday
-    time = Time.new("2025-10-25 13:52:02")
+    time = Time.parse("2025-10-25 13:52:02")
 
     assert_next_rotate_time_words(time, "2025-10-26 00:00:00", ["daily", :daily])
     assert_next_rotate_time_words(time, "2025-10-26 00:00:00", ["weekly", :weekly])
@@ -104,28 +104,28 @@ class TestLogPeriod < Test::Unit::TestCase
   def test_previous_period_end_dst_begin
     tz = ENV['TZ']
     ENV['TZ'] = 'America/New_York' # 1 hour shift
-    time = Time.new("2025-03-09 00:52:02")
+    time = Time.parse("2025-03-09 00:52:02")
 
     assert_previous_period_end_words(time, "2025-03-08 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-03-08 23:59:59", ["weekly", :weekly])
     assert_previous_period_end_words(time, "2025-02-28 23:59:59", ["monthly", :monthly])
 
     ENV['TZ'] = 'Antarctica/Troll' # 2 hour shift
-    time = Time.new("2025-03-30 00:52:02")
+    time = Time.parse("2025-03-30 00:52:02")
 
     assert_previous_period_end_words(time, "2025-03-29 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-03-29 23:59:59", ["weekly", :weekly])
     assert_previous_period_end_words(time, "2025-02-28 23:59:59", ["monthly", :monthly])
 
     ENV['TZ'] = 'Australia/Lord_Howe' # 30 minute shift
-    time = Time.new("2025-04-06 00:52:02")
+    time = Time.parse("2025-04-06 00:52:02")
 
     assert_previous_period_end_words(time, "2025-04-05 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-04-05 23:59:59", ["weekly", :weekly])
     assert_previous_period_end_words(time, "2025-03-31 23:59:59", ["monthly", :monthly])
 
     ENV['TZ'] = 'Asia/Gaza' # 1 hour shift on Saturday
-    time = Time.new("2025-04-12 00:52:02")
+    time = Time.parse("2025-04-12 00:52:02")
 
     assert_previous_period_end_words(time, "2025-04-11 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-04-05 23:59:59", ["weekly", :weekly])
@@ -159,7 +159,7 @@ class TestLogPeriod < Test::Unit::TestCase
 
 
     ENV['TZ'] = 'Asia/Gaza' # 1 hour shift on Saturday
-    time = Time.new("2025-10-25 13:52:02")
+    time = Time.parse("2025-10-25 13:52:02")
 
     assert_previous_period_end_words(time, "2025-10-24 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-10-18 23:59:59", ["weekly", :weekly])
