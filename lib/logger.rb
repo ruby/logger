@@ -749,6 +749,15 @@ private
 
   # Guarantee the existence of this ivar even when subclasses don't call the superclass constructor.
   def level_override
+    unless defined?(@level_override)
+      bad = self.class.instance_method(:initialize)
+      file, line = bad.source_location
+      Kernel.warn <<~";;;", uplevel: 2
+        Logger not initialized properly
+        #{file}:#{line}: info: #{bad.owner}\##{bad.name}: \
+        does not call super probably
+      ;;;
+    end
     @level_override ||= {}
   end
 

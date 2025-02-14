@@ -399,4 +399,19 @@ class TestLogger < Test::Unit::TestCase
     l = Logger.new(File::NULL)
     assert_nil(l.instance_variable_get(:@logdev))
   end
+
+  def test_subclass_initialize
+    bad_logger = Class.new(Logger) {def initialize(*); end}.new(IO::NULL)
+    line = __LINE__ - 1
+    file = Regexp.quote(__FILE__)
+    assert_warning(/not initialized properly.*\n#{file}:#{line}:/) do
+      bad_logger.level
+    end
+
+    good_logger = Class.new(Logger) {def initialize(*); super; end}.new(IO::NULL)
+    file = Regexp.quote(__FILE__)
+    assert_warning('') do
+      good_logger.level
+    end
+  end
 end
