@@ -547,7 +547,7 @@ class Logger
   #   entries are to be written to the given stream.
   # - +nil+ or +File::NULL+: no entries are to be written.
   #
-  # Argument +shift_age+ must be on of:
+  # Argument +shift_age+ must be one of:
   #
   # - The number of log files to be in the rotation.
   #   See {Size-Based Rotation}[rdoc-ref:Logger@Size-Based+Rotation].
