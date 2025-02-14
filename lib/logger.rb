@@ -543,8 +543,8 @@ class Logger
   # - A string filepath: entries are to be written
   #   to the file at that path; if the file at that path exists,
   #   new entries are appended.
-  # - An IO stream (typically +$stdout+, +$stderr+. or an open file):
-  #   entries are to be written to the given stream.
+  # - An IO stream (typically <tt>$stdout</tt>, <tt>$stderr</tt>. or
+  #   an open file): entries are to be written to the given stream.
   # - +nil+ or +File::NULL+: no entries are to be written.
   #
   # Argument +shift_age+ must be one of:
