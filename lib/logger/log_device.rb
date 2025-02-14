@@ -97,16 +97,15 @@ class Logger
     end
 
     if MODE_TO_OPEN == MODE
-      def fixup_mode(dev, filename)
+      def fixup_mode(dev)
         dev
       end
     else
-      def fixup_mode(dev, filename)
+      def fixup_mode(dev)
         return dev if @binmode
-        filename = filename.respond_to?(:to_path) ? filename.to_path : filename
         dev.autoclose = false
         old_dev = dev
-        dev = File.new(dev.fileno, mode: MODE, path: filename)
+        dev = File.new(dev.fileno, mode: MODE, path: dev.path)
         old_dev.close
         PathAttr.set_path(dev, filename) if defined?(PathAttr)
         dev
@@ -119,7 +118,7 @@ class Logger
       rescue Errno::ENOENT
         create_logfile(filename)
       else
-        dev = fixup_mode(dev, filename)
+        dev = fixup_mode(dev)
         dev.sync = true
         dev.binmode if @binmode
         dev
@@ -130,7 +129,7 @@ class Logger
       begin
         logdev = File.open(filename, MODE_TO_CREATE)
         logdev.flock(File::LOCK_EX)
-        logdev = fixup_mode(logdev, filename)
+        logdev = fixup_mode(logdev)
         logdev.sync = true
         logdev.binmode if @binmode
         add_log_header(logdev)
