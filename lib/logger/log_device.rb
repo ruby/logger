@@ -226,9 +226,23 @@ class Logger
     end
 
     def shift_log_file(shifted)
+      stat = @dev.stat
       @dev.close rescue nil
       File.rename(@filename, shifted)
       @dev = create_logfile(@filename)
+      mode, uid, gid = stat.mode, stat.uid, stat.gid
+      begin
+        @dev.chmod(mode) if mode
+        mode = nil
+        @dev.chown(uid, gid)
+      rescue Errno::EPERM
+        if mode
+          # failed to chmod, probably nothing can do more.
+        elsif uid
+          uid = nil
+          retry # to change gid only
+        end
+      end
       return true
     end
   end

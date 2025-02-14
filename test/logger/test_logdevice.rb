@@ -205,6 +205,23 @@ class TestLogDevice < Test::Unit::TestCase
     end
   end
 
+  def test_perm_after_shift
+    mode = 0o611
+    File.open(@filename, "w") {|f| f.chmod mode}
+    logfile = @filename
+    logfile0 = logfile + '.0'
+    logdev = d(@filename, shift_age: 1, shift_size: 0)
+    logdev.write('hello')
+    logdev.write('hello')
+    logdev.close
+
+    assert_equal File.stat(logfile0).mode, File.stat(logfile).mode
+  ensure
+    if logfile0
+      File.unlink(logfile0) rescue nil
+    end
+  end
+
   def test_shifting_size_with_reopen
     tmpfile = Tempfile.new([File.basename(__FILE__, '.*'), '_1.log'])
     logfile = tmpfile.path
