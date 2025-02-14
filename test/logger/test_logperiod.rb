@@ -44,6 +44,7 @@ class TestLogPeriod < Test::Unit::TestCase
     assert_next_rotate_time_words(time, "2025-04-13 00:00:00", ["weekly", :weekly])
     assert_next_rotate_time_words(time, "2025-05-01 00:00:00", ["monthly", :monthly])
 
+  ensure
     ENV['TZ'] = tz
   end
 
@@ -77,6 +78,7 @@ class TestLogPeriod < Test::Unit::TestCase
     assert_next_rotate_time_words(time, "2025-10-26 00:00:00", ["weekly", :weekly])
     assert_next_rotate_time_words(time, "2025-11-01 00:00:00", ["monthly", :monthly])
 
+  ensure
     ENV['TZ'] = tz
   end
 
@@ -131,6 +133,7 @@ class TestLogPeriod < Test::Unit::TestCase
     assert_previous_period_end_words(time, "2025-04-05 23:59:59", ["weekly", :weekly])
     assert_previous_period_end_words(time, "2025-03-31 23:59:59", ["monthly", :monthly])
 
+  ensure
     ENV['TZ'] = tz
   end
 
@@ -164,6 +167,8 @@ class TestLogPeriod < Test::Unit::TestCase
     assert_previous_period_end_words(time, "2025-10-24 23:59:59", ["daily", :daily])
     assert_previous_period_end_words(time, "2025-10-18 23:59:59", ["weekly", :weekly])
     assert_previous_period_end_words(time, "2025-09-30 23:59:59", ["monthly", :monthly])
+
+  ensure
     ENV['TZ'] = tz
   end
 
