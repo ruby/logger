@@ -842,8 +842,6 @@ class TestLogDevice < Test::Unit::TestCase
     end
   end
 
-  env_tz_works = /linux|darwin|freebsd/ =~ RUBY_PLATFORM # borrow from test/ruby/test_time_tz.rb
-
   def test_shifting_weekly_exist_file
     Dir.mktmpdir do |tmpdir|
       assert_in_out_err([{"TZ"=>"UTC"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
