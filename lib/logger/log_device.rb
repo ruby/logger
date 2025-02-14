@@ -184,6 +184,7 @@ class Logger
             @dev = open_logfile(@filename)
           end
         end
+        true
       rescue Errno::ENOENT
         # @filename file would not exist right after #rename and before #create_logfile
         if retry_limit <= 0
