@@ -86,9 +86,9 @@ class Logger
     end
 
     def set_file(shift_age, shift_size, shift_period_suffix)
-      @shift_age = shift_age.nil? ? @shift_age || 7 : shift_age
-      @shift_size = shift_size.nil? ? @shift_size || 1048576 : shift_size
-      @shift_period_suffix = shift_period_suffix.nil? ? @shift_period_suffix || '%Y%m%d' : shift_period_suffix
+      @shift_age = shift_age || @shift_age || 7
+      @shift_size = shift_size || @shift_size || 1048576
+      @shift_period_suffix = shift_period_suffix || @shift_period_suffix || '%Y%m%d'
 
       unless @shift_age.is_a?(Integer)
         base_time = @dev.respond_to?(:stat) ? @dev.stat.mtime : Time.now
