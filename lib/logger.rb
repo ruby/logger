@@ -547,6 +547,16 @@ class Logger
   #   entries are to be written to the given stream.
   # - +nil+ or +File::NULL+: no entries are to be written.
   #
+  # Argument +shift_age+ must be on of:
+  #
+  # - The number of log files to be in the rotation.
+  #   See {Size-Based Rotation}[rdoc-ref:Logger@Size-Based+Rotation].
+  # - A string period indicator.
+  #   See {Periodic Rotation}[rdoc-ref:Logger@Periodic+Rotation].
+  #
+  # Argument +shift_size+ is the maximum size (in bytes) of each log file.
+  # See {Size-Based Rotation}[rdoc-ref:Logger@Size-Based+Rotation].
+  #
   # Examples:
   #
   #   Logger.new('t.log')
@@ -566,14 +576,18 @@ class Logger
   #
   # - +formatter+: sets the entry formatter; default is +nil+.
   #   See {formatter=}[Logger.html#attribute-i-formatter].
+  #
   # - +datetime_format+: sets the format for entry timestamp;
   #   default is +nil+.
   #   See #datetime_format=.
+  #
   # - +binmode+: sets whether the logger writes in binary mode;
   #   default is +false+.
+  #
   # - +shift_period_suffix+: sets the format for the filename suffix
   #   for periodic log file rotation; default is <tt>'%Y%m%d'</tt>.
   #   See {Periodic Rotation}[rdoc-ref:Logger@Periodic+Rotation].
+  #
   # - +reraise_write_errors+: An array of exception classes, which will
   #   be reraised if there is an error when writing to the log device.
   #   The default is to swallow all exceptions raised.
