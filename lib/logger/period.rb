@@ -9,21 +9,20 @@ class Logger
     def next_rotate_time(now, shift_age)
       case shift_age
       when 'daily', :daily
-        t = Time.mktime(now.year, now.month, now.mday) + SiD
+        delta = 1
       when 'weekly', :weekly
-        t = Time.mktime(now.year, now.month, now.mday) + SiD * (7 - now.wday)
+        delta = 7 - now.wday
       when 'monthly', :monthly
-        t = Time.mktime(now.year, now.month, 1) + SiD * 32
-        return Time.mktime(t.year, t.month, 1)
+        delta = 32 - now.mday
+        mday = 1
       when 'now', 'everytime', :now, :everytime
         return now
       else
         raise ArgumentError, "invalid :shift_age #{shift_age.inspect}, should be daily, weekly, monthly, or everytime"
       end
-      if t.hour.nonzero? or t.min.nonzero? or t.sec.nonzero?
-        hour = t.hour
-        t = Time.mktime(t.year, t.month, t.mday)
-        t += SiD if hour > 12
+      t = now + delta * SiD
+      if t.hour.nonzero? or t.min.nonzero? or t.sec.nonzero? or (mday && t.mday != mday)
+        t = Time.mktime(t.year, t.month, mday || t.mday)
       end
       t
     end
@@ -31,17 +30,18 @@ class Logger
     def previous_period_end(now, shift_age)
       case shift_age
       when 'daily', :daily
-        t = Time.mktime(now.year, now.month, now.mday) - SiD / 2
+        delta = 0
       when 'weekly', :weekly
-        t = Time.mktime(now.year, now.month, now.mday) - (SiD * now.wday + SiD / 2)
+        delta = now.wday
       when 'monthly', :monthly
-        t = Time.mktime(now.year, now.month, 1) - SiD / 2
+        delta = now.mday - 1
       when 'now', 'everytime', :now, :everytime
         return now
       else
         raise ArgumentError, "invalid :shift_age #{shift_age.inspect}, should be daily, weekly, monthly, or everytime"
       end
-      Time.mktime(t.year, t.month, t.mday, 23, 59, 59)
+      t = now - delta * SiD
+      Time.mktime(t.year, t.month, t.mday) - 1
     end
   end
 end
