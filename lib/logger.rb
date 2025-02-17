@@ -472,6 +472,51 @@ class Logger
   #
   attr_accessor :formatter
 
+  # Sets or retrieves the logger entries processors.
+  #
+  # A processor allows to add extra information to your log. For instance, to trace a
+  # request more easily, a processor can be added to add a request ID on each log.
+  # Multiple processors can be added to a logger, each passing the processed log
+  # to the next one.
+  #
+  # A processor can either be a proc or a class that responds to `call` and gets
+  # called with four arguments:
+  #
+  # - +severity+: The severity of the entry.
+  # - +time+: A Time object representing the entry's timestamp.
+  # - +progname+: The program name for the entry.
+  # - +msg+: The message for the entry (string or string-convertible object).
+  #
+  # A processor should return a string containing the processed entry.
+  #
+  # Example to add extra information of the request and user to each log.
+  #
+  #   class UserLogProcessor
+  #     def call(severity, time, progname, msg)
+  #       "[User login: #{user.login}] #{msg}"
+  #     end
+  #
+  #     def user
+  #       # Implement to get the user for the current session
+  #     end
+  #   end
+  #
+  #   class RequestLogProcessor
+  #     def call(severity, time, progname, msg)
+  #       "[#{request.uuid}] [#{request.ip}] #{msg}"
+  #     end
+  #   end
+  #
+  #   logger = Logger.new($stdout)
+  #   logger.processors << RequestLogProcessor.new << UserLogProcessor.new
+  #   logger.add(Logger::INFO, "hello \n ''")
+  #
+  # Output:
+  #
+  #   I, [2022-05-13T13:16:29.637488 #8492]  INFO -- : [John] [0000-1111] [192.168.0.1] hello
+  #
+  attr_reader :processors
+
   alias sev_threshold level
   alias sev_threshold= level=
 
@@ -601,6 +646,7 @@ class Logger
     @default_formatter = Formatter.new
     self.datetime_format = datetime_format
     self.formatter = formatter
+    @processors= []
     @logdev = nil
     @level_override = {}
     if logdev && logdev != File::NULL
@@ -684,6 +730,7 @@ class Logger
         progname = @progname
       end
     end
+    message = process_message(format_severity(severity), Time.now, progname, message)
     @logdev.write(
       format_message(format_severity(severity), Time.now, progname, message))
     true
@@ -777,6 +824,14 @@ private
 
   def level_key
     Fiber.current
+  end
+
+  def process_message(severity, datetime, progname, msg)
+    processors.reverse_each do |processor|
+      msg = processor.call(severity, datetime, progname, msg)
+    end
+
+    msg
   end
 
   def format_message(severity, datetime, progname, msg)
