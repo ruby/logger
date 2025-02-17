@@ -502,6 +502,12 @@ class TestLogDevice < Test::Unit::TestCase
     end
   end
 
+  def test_open_without_header
+    d(@filename, skip_header: true)
+
+    assert_equal("", File.read(@filename))
+  end
+
   def test_open_logfile_in_multiprocess
     tmpfile = Tempfile.new([File.basename(__FILE__, '.*'), '_1.log'])
     logfile = tmpfile.path
