@@ -11,10 +11,14 @@ class Logger
     attr_reader :filename
     include MonitorMixin
 
-    def initialize(log = nil, shift_age: nil, shift_size: nil, shift_period_suffix: nil, binmode: false, reraise_write_errors: [])
+    def initialize(
+      log = nil, shift_age: nil, shift_size: nil, shift_period_suffix: nil,
+      binmode: false, reraise_write_errors: [], skip_header: false
+    )
       @dev = @filename = @shift_age = @shift_size = @shift_period_suffix = nil
       @binmode = binmode
       @reraise_write_errors = reraise_write_errors
+      @skip_header = skip_header
       mon_initialize
       set_dev(log)
       set_file(shift_age, shift_size, shift_period_suffix) if @filename
@@ -132,7 +136,7 @@ class Logger
         logdev = fixup_mode(logdev)
         logdev.sync = true
         logdev.binmode if @binmode
-        add_log_header(logdev)
+        add_log_header(logdev) unless @skip_header
         logdev.flock(File::LOCK_UN)
         logdev
       rescue Errno::EEXIST
