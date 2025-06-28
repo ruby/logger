@@ -545,6 +545,7 @@ class Logger
   #   new entries are appended.
   # - An IO stream (typically <tt>$stdout</tt>, <tt>$stderr</tt>. or
   #   an open file): entries are to be written to the given stream.
+  # - An instance of Logger::LogDevice, such as the #logdev of another Logger.
   # - +nil+ or +File::NULL+: no entries are to be written.
   #
   # Argument +shift_age+ must be one of:
@@ -606,7 +607,13 @@ class Logger
     self.formatter = formatter
     @logdev = nil
     @level_override = {}
-    if logdev && logdev != File::NULL
+    return unless logdev
+    case logdev
+    when File::NULL
+      # null logger
+    when LogDevice
+      @logdev = logdev
+    else
       @logdev = LogDevice.new(logdev, shift_age: shift_age,
         shift_size: shift_size,
         shift_period_suffix: shift_period_suffix,
@@ -615,6 +622,12 @@ class Logger
         skip_header: skip_header)
     end
   end
+
+  # The underlying log device.
+  #
+  # This is the first argument passed to the constructor, wrapped in a
+  # Logger::LogDevice, along with the binmode flag and rotation options.
+  attr_reader :logdev
 
   # Sets the logger's output stream:
   #
