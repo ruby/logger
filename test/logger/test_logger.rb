@@ -177,6 +177,16 @@ class TestLogger < Test::Unit::TestCase
     assert_nil(logger.datetime_format)
   end
 
+  def test_logdev
+    logger = Logger.new(STDERR)
+    assert_instance_of(Logger::LogDevice, logger.logdev)
+
+    logdev = Logger::LogDevice.new(STDERR)
+    logger = Logger.new(logdev)
+    assert_instance_of(Logger::LogDevice, logger.logdev)
+    assert_equal(STDERR, logger.logdev.dev)
+  end
+
   def test_initialize_with_level
     # default
     logger = Logger.new(STDERR)
