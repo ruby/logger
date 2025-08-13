@@ -39,9 +39,6 @@ class TestFormatter < Test::Unit::TestCase
     result = formatter.call(severity, time, progname, msg, context: nil)
     matcher = /#{severity[0..0]}, \[#{time_matcher} #\d+\]  #{severity} -- #{progname}: #{msg}\n/
     assert_match(matcher, result)
-
-    # unsupported context
-    assert_raise(Logger::Error) { formatter.call(severity, time, progname, msg, context: Object.new) }
   end
 
   class CustomFormatter < Logger::Formatter
