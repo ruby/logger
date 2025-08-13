@@ -11,25 +11,25 @@ class TestLogger < Test::Unit::TestCase
   end
 
   class Log
-    attr_reader :label, :datetime, :pid, :severity, :progname, :msg
+    attr_reader :label, :context, :datetime, :pid, :severity, :progname, :msg
     def initialize(line)
-      /\A(\w+), \[([^#]*) #(\d+)\]\s+(\w+) -- (\w*): ([\x0-\xff]*)/ =~ line
-      @label, @datetime, @pid, @severity, @progname, @msg = $1, $2, $3, $4, $5, $6
+      /\A(\w+),(?: ([^ ]+))? \[([^#]*) #(\d+)\]\s+(\w+) -- (\w*): ([\x0-\xff]*)/ =~ line
+      @label, @context, @datetime, @pid, @severity, @progname, @msg = $1, $2, $3, $4, $5, $6, $7
     end
   end
 
-  def log_add(logger, severity, msg, progname = nil, &block)
-    log(logger, :add, severity, msg, progname, &block)
+  def log_add(logger, severity, msg, progname = nil, **kwargs, &block)
+    log(logger, :add, severity, msg, progname, **kwargs, &block)
   end
 
-  def log(logger, msg_id, *arg, &block)
-    Log.new(log_raw(logger, msg_id, *arg, &block))
+  def log(logger, msg_id, *arg, **kwargs, &block)
+    Log.new(log_raw(logger, msg_id, *arg, **kwargs, &block))
   end
 
-  def log_raw(logger, msg_id, *arg, &block)
+  def log_raw(logger, msg_id, *arg, **kwargs, &block)
     Tempfile.create(File.basename(__FILE__) + '.log') {|logdev|
       logger.instance_eval { @logdev = Logger::LogDevice.new(logdev) }
-      logger.__send__(msg_id, *arg, &block)
+      logger.__send__(msg_id, *arg, **kwargs, &block)
       logdev.rewind
       logdev.read
     }
@@ -142,6 +142,17 @@ class TestLogger < Test::Unit::TestCase
     assert_match(/^$/, log.datetime)
   ensure
     $VERBOSE = verbose
+  end
+
+  def test_context
+    dummy = STDERR
+    logger = Logger.new(dummy)
+    log = log_add(logger, INFO, "bang", context: { foo: "bar" })
+    assert_equal("[foo=bar]", log.context)
+    log = log_add(logger, INFO, "bang", context: ["tag"])
+    assert_equal("[tag]", log.context)
+    log = log_add(logger, INFO, "bang", context: nil)
+    assert_equal(nil, log.context)
   end
 
   def test_formatter

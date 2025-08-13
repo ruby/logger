@@ -685,7 +685,7 @@ class Logger
   # - #fatal.
   # - #unknown.
   #
-  def add(severity, message = nil, progname = nil)
+  def add(severity, message = nil, progname = nil, context: nil)
     severity ||= UNKNOWN
     if @logdev.nil? or severity < level
       return true
@@ -702,7 +702,7 @@ class Logger
       end
     end
     @logdev.write(
-      format_message(format_severity(severity), Time.now, progname, message))
+      format_message(format_severity(severity), Time.now, progname, message, context: context))
     true
   end
   alias log add
@@ -724,37 +724,37 @@ class Logger
 
   # Equivalent to calling #add with severity <tt>Logger::DEBUG</tt>.
   #
-  def debug(progname = nil, &block)
+  def debug(progname = nil, context: nil, &block)
     add(DEBUG, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::INFO</tt>.
   #
-  def info(progname = nil, &block)
-    add(INFO, nil, progname, &block)
+  def info(progname = nil, context: nil, &block)
+    add(INFO, nil, progname, context: context, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::WARN</tt>.
   #
-  def warn(progname = nil, &block)
+  def warn(progname = nil, context: nil, &block)
     add(WARN, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::ERROR</tt>.
   #
-  def error(progname = nil, &block)
+  def error(progname = nil, context: nil, &block)
     add(ERROR, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::FATAL</tt>.
   #
-  def fatal(progname = nil, &block)
+  def fatal(progname = nil, context: nil, &block)
     add(FATAL, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::UNKNOWN</tt>.
   #
-  def unknown(progname = nil, &block)
+  def unknown(progname = nil, context: nil, &block)
     add(UNKNOWN, nil, progname, &block)
   end
 
@@ -796,7 +796,7 @@ private
     Fiber.current
   end
 
-  def format_message(severity, datetime, progname, msg)
-    (@formatter || @default_formatter).call(severity, datetime, progname, msg)
+  def format_message(severity, datetime, progname, msg, **kwargs)
+    (@formatter || @default_formatter).call(severity, datetime, progname, msg, **kwargs)
   end
 end
