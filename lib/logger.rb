@@ -418,6 +418,33 @@ class Logger
     end
   end
 
+  def with_context(context)
+    fiber = Fiber.current
+    begin
+      prev_context = @context_store[fiber]
+      @context_store[fiber] = if prev_context.nil?
+        context
+      else
+        case context
+        when Hash
+          prev_context.merge(context)
+        when Array
+          prev_context + context
+        else
+          context
+        end
+      end
+
+      yield
+    ensure
+      if prev_context.nil?
+        @context_store.delete(fiber)
+      else
+        @context_store[fiber] = prev_context
+      end
+    end
+  end
+
   # Program name to include in log messages.
   attr_accessor :progname
 
@@ -607,6 +634,7 @@ class Logger
     self.formatter = formatter
     @logdev = nil
     @level_override = {}
+    @context_store = {}.compare_by_identity
     return unless logdev
     case logdev
     when File::NULL
@@ -796,7 +824,23 @@ private
     Fiber.current
   end
 
-  def format_message(severity, datetime, progname, msg, **kwargs)
-    (@formatter || @default_formatter).call(severity, datetime, progname, msg, **kwargs)
+  def format_message(severity, datetime, progname, msg, context: nil)
+    current_context = @context_store[Fiber.current]
+    formatter = @formatter || @default_formatter
+
+    case context
+    when nil
+      context = current_context
+    when Hash
+      context = current_context.merge(context) if current_context
+    when Array
+      context = current_context + context if current_context
+    end
+
+    if context.nil?
+      formatter.call(severity, datetime, progname, msg)
+    else
+      formatter.call(severity, datetime, progname, msg, context: context)
+    end
   end
 end
