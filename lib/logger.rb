@@ -419,28 +419,35 @@ class Logger
   end
 
   def with_context(context)
-    fiber = Fiber.current
     begin
-      prev_context = @context_store[fiber]
-      @context_store[fiber] = if prev_context.nil?
-        context
-      else
-        case context
-        when Hash
-          prev_context.merge(context)
-        when Array
-          prev_context + context
-        else
-          context
-        end
-      end
-
-      yield
+      prev_context = context_store[context_key]
+      merged = merge_context(prev_context, context)
+      context_store[context_key] = merged
+      yield merged
     ensure
       if prev_context.nil?
-        @context_store.delete(fiber)
+        context_store.delete(context_key)
       else
-        @context_store[fiber] = prev_context
+        context_store[context_key] = prev_context
+      end
+    end
+  end
+  
+  private attr_reader :context_store
+  
+  private def context_key = Fiber.current
+  
+  private def merge_context(prev_context, context)
+    if prev_context.nil?
+      context.dup
+    else
+      case context
+      when Hash
+        prev_context.merge(context)
+      when Array
+        prev_context + context
+      else
+        context.dup
       end
     end
   end
