@@ -418,6 +418,33 @@ class Logger
     end
   end
 
+  def with_context(context)
+    fiber = Fiber.current
+    begin
+      prev_context = @context_store[fiber]
+      @context_store[fiber] = if prev_context.nil?
+        context
+      else
+        case context
+        when Hash
+          prev_context.merge(context)
+        when Array
+          prev_context + context
+        else
+          context
+        end
+      end
+
+      yield
+    ensure
+      if prev_context.nil?
+        @context_store.delete(fiber)
+      else
+        @context_store[fiber] = prev_context
+      end
+    end
+  end
+
   # Program name to include in log messages.
   attr_accessor :progname
 
@@ -607,6 +634,7 @@ class Logger
     self.formatter = formatter
     @logdev = nil
     @level_override = {}
+    @context_store = {}.compare_by_identity
     return unless logdev
     case logdev
     when File::NULL
@@ -685,7 +713,7 @@ class Logger
   # - #fatal.
   # - #unknown.
   #
-  def add(severity, message = nil, progname = nil)
+  def add(severity, message = nil, progname = nil, context: nil)
     severity ||= UNKNOWN
     if @logdev.nil? or severity < level
       return true
@@ -702,7 +730,7 @@ class Logger
       end
     end
     @logdev.write(
-      format_message(format_severity(severity), Time.now, progname, message))
+      format_message(format_severity(severity), Time.now, progname, message, context: context))
     true
   end
   alias log add
@@ -724,37 +752,37 @@ class Logger
 
   # Equivalent to calling #add with severity <tt>Logger::DEBUG</tt>.
   #
-  def debug(progname = nil, &block)
+  def debug(progname = nil, context: nil, &block)
     add(DEBUG, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::INFO</tt>.
   #
-  def info(progname = nil, &block)
-    add(INFO, nil, progname, &block)
+  def info(progname = nil, context: nil, &block)
+    add(INFO, nil, progname, context: context, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::WARN</tt>.
   #
-  def warn(progname = nil, &block)
+  def warn(progname = nil, context: nil, &block)
     add(WARN, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::ERROR</tt>.
   #
-  def error(progname = nil, &block)
+  def error(progname = nil, context: nil, &block)
     add(ERROR, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::FATAL</tt>.
   #
-  def fatal(progname = nil, &block)
+  def fatal(progname = nil, context: nil, &block)
     add(FATAL, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::UNKNOWN</tt>.
   #
-  def unknown(progname = nil, &block)
+  def unknown(progname = nil, context: nil, &block)
     add(UNKNOWN, nil, progname, &block)
   end
 
@@ -796,7 +824,23 @@ private
     Fiber.current
   end
 
-  def format_message(severity, datetime, progname, msg)
-    (@formatter || @default_formatter).call(severity, datetime, progname, msg)
+  def format_message(severity, datetime, progname, msg, context: nil)
+    current_context = @context_store[Fiber.current]
+    formatter = @formatter || @default_formatter
+
+    case context
+    when nil
+      context = current_context
+    when Hash
+      context = current_context.merge(context) if current_context
+    when Array
+      context = current_context + context if current_context
+    end
+
+    if context.nil?
+      formatter.call(severity, datetime, progname, msg)
+    else
+      formatter.call(severity, datetime, progname, msg, context: context)
+    end
   end
 end
