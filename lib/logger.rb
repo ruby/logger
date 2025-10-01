@@ -380,7 +380,7 @@ class Logger
   include Severity
 
   # Must respond to .new and return a Hash-like object.
-  # The returned object must respond to #[], #[]=, #delete.
+  # The returned object must respond to #[], #[]=, #delete, #dup, and #clear.
   #
   # ObjectSpace::WeakKeyMap when supported.
   OverrideMap =
@@ -798,6 +798,11 @@ private
       ;;;
     end
     @level_override ||= OverrideMap.new
+  end
+
+  def initialize_copy(other)
+    super
+    @level_override = @level_override&.clone&.clear
   end
 
   def level_key
