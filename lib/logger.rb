@@ -367,6 +367,61 @@ require_relative 'logger/errors'
 # see details and suggestions at
 # {Time#strftime}[https://docs.ruby-lang.org/en/master/Time.html#method-i-strftime].
 #
+# == Logging Context
+#
+# The logging context stores relevant data which should be written, as part of the
+# formatted data, in log entries. The context data should be indexed by execution
+# context.
+#
+#   logger = Logger.new($stdout)
+#   logger.info('inline context', context: { foo: 'bar' })
+#   # => I, [foo=bar] [2025-10-21T12:03:28.319551 #86131]  INFO -- : inline context
+#   logger.info(context: { foo: 'bar' }) { 'block inline' }
+#   # => I, [foo=bar] [2025-10-21T12:03:53.568226 #86131]  INFO -- : block inline
+#   logger.with_context(foo: "bar") do
+#     logger.info('one')
+#     logger.info('two')
+#   end
+#   I, [foo=bar] [2025-10-21T12:04:32.762566 #86131]  INFO -- : one
+#   I, [foo=bar] [2025-10-21T12:04:32.762641 #86131]  INFO -- : two
+#
+# The default store is a hash which indexes context by a (the current) fiber object.
+# This means that context isn't shared across threads, and across fibers.
+#
+#   logger = Logger.new($stdout)
+#
+#   logger.with_context(foo: "bar") do
+#     Thread.start { logger.info('one') }
+#     logger.info('two')
+#   end
+#   I, [2025-10-21T12:08:04.614978 #86131]  INFO -- : one
+#   I, [foo=bar] [2025-10-21T12:04:32.762641 #86131]  INFO -- : two
+#
+# This could an issue in situations where propagating the context from the parent
+# thread or fiber is desired. In such cases, you can pass a storage object, and
+# override the functions required to support it. For example, this is how you could
+# use the Fiber storage (ruby +3.2):
+#
+#   class FiberLogger < Logger
+#     private
+#
+#     def current_context
+#       context = Fiber[:fiber_logger_logging_context] ||= {}.compary_by_identity
+#       context[self]
+#     end
+#
+#     def set_context(val)
+#       current_context = val
+#     end
+#   end
+#
+#   logger = FiberLogger.new($stdout)
+#
+# Alternatively, you can have your own store object implementing #[](Fiber),
+# #[]=(Fiber, untyped) and #delete(Fiber):
+#
+#   logger = Logger.new($stdout, context_store: MyContext.new)
+#
 class Logger
   _, name, rev = %w$Id$
   if name
