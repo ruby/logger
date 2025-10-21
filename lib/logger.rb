@@ -419,13 +419,12 @@ class Logger
   end
 
   def with_context(context)
-    fiber = Fiber.current
     begin
-      prev_context = @context_store[fiber]
-      @context_store[fiber] = if prev_context.nil?
-        context
+      prev_context = current_context
+      if prev_context.nil?
+        set_context(context)
       else
-        case context
+        context = case context
         when Hash
           prev_context.merge(context)
         when Array
@@ -433,15 +432,12 @@ class Logger
         else
           context
         end
+        set_context(context)
       end
 
       yield
     ensure
-      if prev_context.nil?
-        @context_store.delete(fiber)
-      else
-        @context_store[fiber] = prev_context
-      end
+      set_context(prev_context)
     end
   end
 
@@ -623,10 +619,15 @@ class Logger
   #   when creating a new log file. The default is +false+, meaning
   #   the header will be written as usual.
   #
+  # - +context_store+: where the logging context is stored. default value is
+  #   an hash which expects fiber objects as keys.
+  #   See {Logging Context}[rdoc-ref:Logger@Logging+Context]:
+  #
   def initialize(logdev, shift_age = 0, shift_size = 1048576, level: DEBUG,
                  progname: nil, formatter: nil, datetime_format: nil,
                  binmode: false, shift_period_suffix: '%Y%m%d',
-                 reraise_write_errors: [], skip_header: false)
+                 reraise_write_errors: [], skip_header: false,
+                 context_store: {}.compare_by_identity)
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
@@ -634,7 +635,7 @@ class Logger
     self.formatter = formatter
     @logdev = nil
     @level_override = {}
-    @context_store = {}.compare_by_identity
+    @context_store = context_store
     return unless logdev
     case logdev
     when File::NULL
@@ -799,6 +800,18 @@ class Logger
 
 private
 
+  def current_context
+    @context_store[Fiber.current]
+  end
+
+  def set_context(val)
+    if val.nil?
+      @context_store.delete(Fiber.current)
+    else
+      @context_store[Fiber.current] = val
+    end
+  end
+
   # \Severity label for logging (max 5 chars).
   SEV_LABEL = %w(DEBUG INFO WARN ERROR FATAL ANY).freeze
 
@@ -825,16 +838,16 @@ private
   end
 
   def format_message(severity, datetime, progname, msg, context: nil)
-    current_context = @context_store[Fiber.current]
+    current_ctx = current_context
     formatter = @formatter || @default_formatter
 
     case context
     when nil
-      context = current_context
+      context = current_ctx
     when Hash
-      context = current_context.merge(context) if current_context
+      context = current_ctx.merge(context) if current_ctx
     when Array
-      context = current_context + context if current_context
+      context = current_ctx + context if current_ctx
     end
 
     if context.nil?
