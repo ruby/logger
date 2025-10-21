@@ -434,6 +434,14 @@ class Logger
 
   include Severity
 
+  # Must respond to .new and return a Hash-like object.
+  # The returned object must respond to #[], #[]=, #delete.
+  #
+  # ObjectSpace::WeakKeyMap when supported.
+  OverrideMap =
+    defined?(ObjectSpace::WeakKeyMap) ? ObjectSpace::WeakKeyMap : Hash
+  private_constant :OverrideMap
+
   # Logging severity threshold (e.g. <tt>Logger::INFO</tt>).
   def level
     level_override[level_key] || @level
@@ -682,7 +690,7 @@ class Logger
                  progname: nil, formatter: nil, datetime_format: nil,
                  binmode: false, shift_period_suffix: '%Y%m%d',
                  reraise_write_errors: [], skip_header: false,
-                 context_store: {}.compare_by_identity)
+                 context_store: OverrideMap.new)
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
