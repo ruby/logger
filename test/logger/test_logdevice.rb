@@ -745,7 +745,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_weekly_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -W0 -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
@@ -776,7 +776,7 @@ class TestLogDevice < Test::Unit::TestCase
 
   def test_shifting_monthly_dst_change
     Dir.mktmpdir do |tmpdir|
-      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
+      assert_separately([{"TZ"=>"Europe/London"}, *%W"-I#{@top_dir} -W0 -rlogger -C#{tmpdir} -"], "#{<<-"begin;"}\n#{<<-'end;'}")
       begin;
         begin
           module FakeTime
