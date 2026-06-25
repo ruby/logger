@@ -170,6 +170,37 @@ class TestLogger < Test::Unit::TestCase
     assert_equal("<""<INFO-foo>>\n", line)
   end
 
+  def test_processors
+    dummy = STDERR
+    logger = Logger.new(dummy)
+    # default
+    log = log(logger, :info, "foo")
+    assert_equal("foo\n", log.msg)
+    # config
+    user_info_processor = proc { |severity, timestamp, progname, msg|
+      "[User ID: 123] [User Login: John] #{msg}\n"
+    }
+    logger.processors << user_info_processor
+    log = log(logger, :info, "foo")
+    assert_equal("[User ID: 123] [User Login: John] foo\n\n", log.msg)
+    # again
+    request_info_processor = Object.new
+    def request_info_processor.call(severity, timestamp, progname, msg)
+      "[Request ID: 1234] #{msg}"
+    end
+    logger.processors << request_info_processor
+    log = log(logger, :info, "foo")
+    assert_equal("[User ID: 123] [User Login: John] [Request ID: 1234] foo\n\n", log.msg)
+    # reset
+    logger.processors.clear
+    log = log(logger, :info, "foo")
+    assert_equal("foo\n", log.msg)
+    # again
+    logger.processors.clear
+    log = log(logger, :info, "foo")
+    assert_equal("foo\n", log.msg)
+  end
+
   def test_initialize
     logger = Logger.new(STDERR)
     assert_nil(logger.progname)
