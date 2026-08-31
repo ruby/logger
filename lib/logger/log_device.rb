@@ -236,16 +236,16 @@ class Logger
       @dev = create_logfile(@filename)
       mode, uid, gid = stat.mode, stat.uid, stat.gid
       begin
-        @dev.chmod(mode) if mode
-        mode = nil
         @dev.chown(uid, gid)
       rescue Errno::EPERM
-        if mode
-          # failed to chmod, probably nothing can do more.
-        elsif uid
-          uid = nil
-          retry # to change gid only
+        begin
+          @dev.chown(nil, gid) if uid
+        rescue Errno::EPERM
         end
+      end
+      begin
+        @dev.chmod(mode) if mode
+      rescue Errno::EPERM
       end
       return true
     end
