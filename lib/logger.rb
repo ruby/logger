@@ -430,13 +430,17 @@ class Logger
   # - +nil+: the logger uses <tt>'%Y-%m-%dT%H:%M:%S.%6N'</tt>.
   #
   def datetime_format=(datetime_format)
-    @default_formatter.datetime_format = datetime_format
+    formatter = @formatter || @default_formatter
+    if formatter.respond_to?(:datetime_format=)
+      formatter.datetime_format = datetime_format
+    end
   end
 
   # Returns the date-time format; see #datetime_format=.
   #
   def datetime_format
-    @default_formatter.datetime_format
+    formatter = @formatter || @default_formatter
+    formatter.datetime_format if formatter.respond_to?(:datetime_format)
   end
 
   # Sets or retrieves the logger entry formatter proc.
@@ -603,8 +607,8 @@ class Logger
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
-    self.datetime_format = datetime_format
     self.formatter = formatter
+    self.datetime_format = datetime_format
     @logdev = nil
     @level_override = {}
     return unless logdev
