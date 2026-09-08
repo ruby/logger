@@ -367,6 +367,61 @@ require_relative 'logger/errors'
 # see details and suggestions at
 # {Time#strftime}[https://docs.ruby-lang.org/en/master/Time.html#method-i-strftime].
 #
+# == Logging Context
+#
+# The logging context stores relevant data which should be written, as part of the
+# formatted data, in log entries. The context data should be indexed by execution
+# context.
+#
+#   logger = Logger.new($stdout)
+#   logger.info('inline context', context: { foo: 'bar' })
+#   # => I, [foo=bar] [2025-10-21T12:03:28.319551 #86131]  INFO -- : inline context
+#   logger.info(context: { foo: 'bar' }) { 'block inline' }
+#   # => I, [foo=bar] [2025-10-21T12:03:53.568226 #86131]  INFO -- : block inline
+#   logger.with_context(foo: "bar") do
+#     logger.info('one')
+#     logger.info('two')
+#   end
+#   I, [foo=bar] [2025-10-21T12:04:32.762566 #86131]  INFO -- : one
+#   I, [foo=bar] [2025-10-21T12:04:32.762641 #86131]  INFO -- : two
+#
+# The default store is a hash which indexes context by a (the current) fiber object.
+# This means that context isn't shared across threads, and across fibers.
+#
+#   logger = Logger.new($stdout)
+#
+#   logger.with_context(foo: "bar") do
+#     Thread.start { logger.info('one') }
+#     logger.info('two')
+#   end
+#   I, [2025-10-21T12:08:04.614978 #86131]  INFO -- : one
+#   I, [foo=bar] [2025-10-21T12:04:32.762641 #86131]  INFO -- : two
+#
+# This could an issue in situations where propagating the context from the parent
+# thread or fiber is desired. In such cases, you can pass a storage object, and
+# override the functions required to support it. For example, this is how you could
+# use the Fiber storage (ruby +3.2):
+#
+#   class FiberLogger < Logger
+#     private
+#
+#     def current_context
+#       context = Fiber[:fiber_logger_logging_context] ||= {}.compary_by_identity
+#       context[self]
+#     end
+#
+#     def set_context(val)
+#       current_context = val
+#     end
+#   end
+#
+#   logger = FiberLogger.new($stdout)
+#
+# Alternatively, you can have your own store object implementing #[](Fiber),
+# #[]=(Fiber, untyped) and #delete(Fiber):
+#
+#   logger = Logger.new($stdout, context_store: MyContext.new)
+#
 class Logger
   _, name, rev = %w$Id$
   if name
@@ -378,6 +433,14 @@ class Logger
   ProgName = "#{name}/#{rev}"
 
   include Severity
+
+  # Must respond to .new and return a Hash-like object.
+  # The returned object must respond to #[], #[]=, #delete.
+  #
+  # ObjectSpace::WeakKeyMap when supported.
+  OverrideMap =
+    defined?(ObjectSpace::WeakKeyMap) ? ObjectSpace::WeakKeyMap : Hash
+  private_constant :OverrideMap
 
   # Logging severity threshold (e.g. <tt>Logger::INFO</tt>).
   def level
@@ -415,6 +478,29 @@ class Logger
       else
         level_override.delete(level_key)
       end
+    end
+  end
+
+  def with_context(context)
+    begin
+      prev_context = current_context
+      if prev_context.nil?
+        set_context(context)
+      else
+        context = case context
+        when Hash
+          prev_context.merge(context)
+        when Array
+          prev_context + context
+        else
+          context
+        end
+        set_context(context)
+      end
+
+      yield
+    ensure
+      set_context(prev_context)
     end
   end
 
@@ -596,10 +682,15 @@ class Logger
   #   when creating a new log file. The default is +false+, meaning
   #   the header will be written as usual.
   #
+  # - +context_store+: where the logging context is stored. default value is
+  #   an hash which expects fiber objects as keys.
+  #   See {Logging Context}[rdoc-ref:Logger@Logging+Context]:
+  #
   def initialize(logdev, shift_age = 0, shift_size = 1048576, level: DEBUG,
                  progname: nil, formatter: nil, datetime_format: nil,
                  binmode: false, shift_period_suffix: '%Y%m%d',
-                 reraise_write_errors: [], skip_header: false)
+                 reraise_write_errors: [], skip_header: false,
+                 context_store: OverrideMap.new)
     self.level = level
     self.progname = progname
     @default_formatter = Formatter.new
@@ -607,6 +698,7 @@ class Logger
     self.formatter = formatter
     @logdev = nil
     @level_override = {}
+    @context_store = context_store
     return unless logdev
     case logdev
     when File::NULL
@@ -685,7 +777,7 @@ class Logger
   # - #fatal.
   # - #unknown.
   #
-  def add(severity, message = nil, progname = nil)
+  def add(severity, message = nil, progname = nil, context: nil)
     severity ||= UNKNOWN
     if @logdev.nil? or severity < level
       return true
@@ -702,7 +794,7 @@ class Logger
       end
     end
     @logdev.write(
-      format_message(format_severity(severity), Time.now, progname, message))
+      format_message(format_severity(severity), Time.now, progname, message, context: context))
     true
   end
   alias log add
@@ -724,37 +816,37 @@ class Logger
 
   # Equivalent to calling #add with severity <tt>Logger::DEBUG</tt>.
   #
-  def debug(progname = nil, &block)
+  def debug(progname = nil, context: nil, &block)
     add(DEBUG, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::INFO</tt>.
   #
-  def info(progname = nil, &block)
-    add(INFO, nil, progname, &block)
+  def info(progname = nil, context: nil, &block)
+    add(INFO, nil, progname, context: context, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::WARN</tt>.
   #
-  def warn(progname = nil, &block)
+  def warn(progname = nil, context: nil, &block)
     add(WARN, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::ERROR</tt>.
   #
-  def error(progname = nil, &block)
+  def error(progname = nil, context: nil, &block)
     add(ERROR, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::FATAL</tt>.
   #
-  def fatal(progname = nil, &block)
+  def fatal(progname = nil, context: nil, &block)
     add(FATAL, nil, progname, &block)
   end
 
   # Equivalent to calling #add with severity <tt>Logger::UNKNOWN</tt>.
   #
-  def unknown(progname = nil, &block)
+  def unknown(progname = nil, context: nil, &block)
     add(UNKNOWN, nil, progname, &block)
   end
 
@@ -770,6 +862,18 @@ class Logger
   end
 
 private
+
+  def current_context
+    @context_store[Fiber.current]
+  end
+
+  def set_context(val)
+    if val.nil?
+      @context_store.delete(Fiber.current)
+    else
+      @context_store[Fiber.current] = val
+    end
+  end
 
   # \Severity label for logging (max 5 chars).
   SEV_LABEL = %w(DEBUG INFO WARN ERROR FATAL ANY).freeze
@@ -796,7 +900,23 @@ private
     Fiber.current
   end
 
-  def format_message(severity, datetime, progname, msg)
-    (@formatter || @default_formatter).call(severity, datetime, progname, msg)
+  def format_message(severity, datetime, progname, msg, context: nil)
+    current_ctx = current_context
+    formatter = @formatter || @default_formatter
+
+    case context
+    when nil
+      context = current_ctx
+    when Hash
+      context = current_ctx.merge(context) if current_ctx
+    when Array
+      context = current_ctx + context if current_ctx
+    end
+
+    if context.nil?
+      formatter.call(severity, datetime, progname, msg)
+    else
+      formatter.call(severity, datetime, progname, msg, context: context)
+    end
   end
 end
