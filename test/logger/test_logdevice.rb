@@ -133,6 +133,32 @@ class TestLogDevice < Test::Unit::TestCase
     r.close
   end
 
+  def test_close_propagates_interrupt
+    assert_close_propagates(Interrupt.new("interrupted"))
+  end
+
+  def test_close_propagates_signal_exception
+    assert_close_propagates(SignalException.new("TERM"))
+  end
+
+  def test_close_propagates_system_exit
+    assert_close_propagates(SystemExit.new(17))
+  end
+
+  def assert_close_propagates(exception)
+    device = Object.new
+    device.define_singleton_method(:write) {|*args| }
+    close_calls = 0
+    device.define_singleton_method(:close) do
+      close_calls += 1
+      raise exception if close_calls == 1
+    end
+    logdev = d(device)
+    raised = assert_raise(exception.class) {logdev.close}
+    assert_same(exception, raised)
+    assert_equal(1, close_calls)
+  end
+
   def test_reopen_io
     logdev  = d(STDERR)
     old_dev = logdev.dev
