@@ -200,6 +200,8 @@ class Logger
           retry
         end
       end
+    rescue *@reraise_write_errors
+      raise
     rescue
       warn("log rotation inter-process lock failed. #{$!}")
     end
