@@ -168,8 +168,9 @@ class Logger
       else
         now = Time.now
         if now >= @next_rotate_time
-          @next_rotate_time = next_rotate_time(now, @shift_age)
-          lock_shift_log { shift_log_period(previous_period_end(now, @shift_age)) }
+          if lock_shift_log { shift_log_period(previous_period_end(now, @shift_age)) }
+            @next_rotate_time = next_rotate_time(now, @shift_age)
+          end
         end
       end
     end
