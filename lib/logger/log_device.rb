@@ -130,6 +130,8 @@ class Logger
     end
 
     def create_logfile(filename)
+      logdev = nil
+      success = false
       begin
         logdev = File.open(filename, MODE_TO_CREATE)
         logdev.flock(File::LOCK_EX)
@@ -138,10 +140,13 @@ class Logger
         logdev.binmode if @binmode
         add_log_header(logdev) unless @skip_header
         logdev.flock(File::LOCK_UN)
+        success = true
         logdev
       rescue Errno::EEXIST
         # file is created by another process
         open_logfile(filename)
+      ensure
+        logdev.close if logdev and !success
       end
     end
 
