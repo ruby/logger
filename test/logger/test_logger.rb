@@ -266,6 +266,15 @@ class TestLogger < Test::Unit::TestCase
     assert_equal("false\n", log.msg)
   end
 
+  def test_add_with_out_of_range_severity
+    logger = Logger.new(nil, level: -10)
+    [-1, -2, -5, -6, -7, 6].each do |severity|
+      log = log_add(logger, severity, "msg")
+      assert_equal("ANY", log.severity, "severity #{severity}")
+      assert_equal("A", log.label, "severity #{severity}")
+    end
+  end
+
   def test_add_binary_data_with_binmode_logdev
     EnvUtil.with_default_internal(Encoding::UTF_8) do
       begin

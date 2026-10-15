@@ -775,7 +775,7 @@ private
   SEV_LABEL = %w(DEBUG INFO WARN ERROR FATAL ANY).freeze
 
   def format_severity(severity)
-    SEV_LABEL[severity] || 'ANY'
+    (severity >= 0 && SEV_LABEL[severity]) || 'ANY'
   end
 
   # Guarantee the existence of this ivar even when subclasses don't call the superclass constructor.
