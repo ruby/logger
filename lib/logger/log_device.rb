@@ -40,7 +40,7 @@ class Logger
         synchronize do
           @dev.close rescue nil
         end
-      rescue Exception
+      rescue
         @dev.close rescue nil
       end
     end
