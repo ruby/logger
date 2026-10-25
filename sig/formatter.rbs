@@ -4,6 +4,8 @@ class Logger
   # Default formatter for log messages.
   #
   class Formatter
+    Format: String
+
     attr_accessor datetime_format: String?
 
     # <!--
@@ -25,5 +27,3 @@ class Logger
     def call: (String severity, Time time, untyped progname, untyped msg) -> _ToS
   end
 end
-
-Logger::Formatter::Format: String

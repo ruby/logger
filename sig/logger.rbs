@@ -343,6 +343,15 @@ class Logger
 
   include Logger::Severity
 
+  ProgName: String
+
+  # <!-- rdoc-file=lib/logger.rb -->
+  # Severity label for logging (max 5 chars).
+  #
+  SEV_LABEL: Array[String]
+
+  VERSION: String
+
   # <!--
   #   rdoc-file=lib/logger.rb
   #   - <<(msg)
@@ -769,12 +778,3 @@ class Logger
   #
   def initialize: (logdev? logdev, ?Numeric | String shift_age, ?Integer shift_size, ?shift_period_suffix: String, ?binmode: boolish, ?datetime_format: String, ?formatter: _Formatter, ?progname: String, ?level: Integer | interned) -> void
 end
-
-Logger::ProgName: String
-
-# <!-- rdoc-file=lib/logger.rb -->
-# Severity label for logging (max 5 chars).
-#
-Logger::SEV_LABEL: Array[String]
-
-Logger::VERSION: String
