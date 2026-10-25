@@ -720,22 +720,6 @@ class Logger
   #
   def warn?: () -> bool
 
-  private
-
-  # <!--
-  #   rdoc-file=lib/logger.rb
-  #   - format_message(severity, datetime, progname, msg)
-  # -->
-  #
-  def format_message: (String severity, Time datetime, untyped progname, untyped msg) -> _ToS
-
-  # <!--
-  #   rdoc-file=lib/logger.rb
-  #   - format_severity(severity)
-  # -->
-  #
-  def format_severity: (Integer severity) -> String
-
   # <!--
   #   rdoc-file=lib/logger.rb
   #   - Logger.new(logdev, shift_age = 0, shift_size = 1048576, **options)
