@@ -6,6 +6,8 @@ class Logger
   class Formatter
     Format: String
 
+    DatetimeFormat: String
+
     attr_accessor datetime_format: String?
 
     # <!--

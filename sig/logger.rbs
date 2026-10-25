@@ -642,6 +642,8 @@ class Logger
   #
   alias log add
 
+  attr_reader logdev: LogDevice?
+
   # <!-- rdoc-file=lib/logger.rb -->
   # Program name to include in log messages.
   #
@@ -678,8 +680,7 @@ class Logger
   #     #  "E, [2022-05-12T14:21:27.596726 #22428] ERROR -- : one\n",
   #     #  "E, [2022-05-12T14:23:05.847241 #22428] ERROR -- : three\n"]
   #
-  def reopen: () -> self
-            | (logdev?) -> self
+  def reopen: (?logdev? logdev, ?(Numeric | String)? shift_age, ?Integer? shift_size, ?shift_period_suffix: String?, ?binmode: boolish?) -> self
 
   # <!--
   #   rdoc-file=lib/logger.rb
@@ -729,6 +730,8 @@ class Logger
   #
   def warn?: () -> bool
 
+  def with_level: [T] (Integer | interned severity) { () -> T } -> T
+
   # <!--
   #   rdoc-file=lib/logger.rb
   #   - Logger.new(logdev, shift_age = 0, shift_size = 1048576, **options)
@@ -776,5 +779,5 @@ class Logger
   #     reraised if there is an error when writing to the log device. The default
   #     is to swallow all exceptions raised.
   #
-  def initialize: (logdev? logdev, ?Numeric | String shift_age, ?Integer shift_size, ?shift_period_suffix: String, ?binmode: boolish, ?datetime_format: String, ?formatter: _Formatter, ?progname: String, ?level: Integer | interned) -> void
+  def initialize: (logdev? logdev, ?Numeric | String shift_age, ?Integer shift_size, ?level: Integer | interned, ?progname: String?, ?formatter: _Formatter?, ?datetime_format: String?, ?binmode: boolish, ?shift_period_suffix: String, ?reraise_write_errors: Array[singleton(Exception)], ?skip_header: boolish) -> void
 end
