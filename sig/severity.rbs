@@ -1,3 +1,4 @@
+%a{annotate:rdoc:skip}
 class Logger
   # <!-- rdoc-file=lib/logger/severity.rb -->
   # Logging severity.
