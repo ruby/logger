@@ -6,8 +6,6 @@ class Logger
   class LogDevice
     include MonitorMixin
 
-    include Period
-
     attr_reader dev: _WriteCloser
     attr_reader filename: String?
 
