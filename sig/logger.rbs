@@ -124,7 +124,8 @@
 # created.
 #
 # The logged timestamp is formatted by method
-# [Time#strftime](rdoc-ref:Time#strftime) using this format string:
+# [Time#strftime](https://docs.ruby-lang.org/en/master/Time.html#method-i-strfti
+# me) using this format string:
 #
 #     '%Y-%m-%dT%H:%M:%S.%6N'
 #
@@ -144,12 +145,12 @@
 #     logger.add(Logger::INFO, 'My message')
 #     # => I, [2022-05-07T18:15:37.647581 #20536]  INFO -- : My message
 #
-# For the default entry formatter, `Logger::Formatter`, the message object may
-# be:
+# For the default entry formatter, <code>Logger::Formatter</code>, the message
+# object may be:
 #
 # *   A string: used as-is.
-# *   An Exception: `message.message` is used.
-# *   Anything else: `message.inspect` is used.
+# *   An Exception: <code>message.message</code> is used.
+# *   Anything else: <code>message.inspect</code> is used.
 #
 # **Note**: Logger::Formatter does not escape or sanitize the message passed to
 # it. Developers should be aware that malicious data (user input) may be in the
@@ -283,26 +284,28 @@
 #
 #     logger = Logger.new('t.log', 3)
 #
-# Logging begins in the new log file, `t.log`; the log file is "full" and ready
-# for rotation when a new entry would cause its size to exceed `shift_size`.
+# Logging begins in the new log file, <code>t.log</code>; the log file is "full"
+# and ready for rotation when a new entry would cause its size to exceed
+# `shift_size`.
 #
-# The first time `t.log` is full:
+# The first time <code>t.log</code> is full:
 #
-# *   `t.log` is closed and renamed to `t.log.0`.
-# *   A new file `t.log` is opened.
+# *   <code>t.log</code> is closed and renamed to <code>t.log.0</code>.
+# *   A new file <code>t.log</code> is opened.
 #
-# The second time `t.log` is full:
+# The second time <code>t.log</code> is full:
 #
-# *   +t.log.0 is renamed as `t.log.1`.
-# *   `t.log` is closed and renamed to `t.log.0`.
-# *   A new file `t.log` is opened.
+# *   +t.log.0 is renamed as <code>t.log.1</code>.
+# *   <code>t.log</code> is closed and renamed to <code>t.log.0</code>.
+# *   A new file <code>t.log</code> is opened.
 #
-# Each subsequent time that `t.log` is full, the log files are rotated:
+# Each subsequent time that <code>t.log</code> is full, the log files are
+# rotated:
 #
-# *   `t.log.1` is removed.
-# *   +t.log.0 is renamed as `t.log.1`.
-# *   `t.log` is closed and renamed to `t.log.0`.
-# *   A new file `t.log` is opened.
+# *   <code>t.log.1</code> is removed.
+# *   +t.log.0 is renamed as <code>t.log.1</code>.
+# *   <code>t.log</code> is closed and renamed to <code>t.log.0</code>.
+# *   A new file <code>t.log</code> is opened.
 #
 # ### Periodic Rotation
 #
@@ -323,15 +326,16 @@
 #
 # When the given period expires:
 #
-# *   The base log file, `t.log` is closed and renamed with a date-based suffix
-#     such as `t.log.20220509`.
-# *   A new log file `t.log` is opened.
+# *   The base log file, <code>t.log</code> is closed and renamed with a
+#     date-based suffix such as <code>t.log.20220509</code>.
+# *   A new log file <code>t.log</code> is opened.
 # *   Nothing is removed.
 #
-# The default format for the suffix is `'%Y%m%d'`, which produces a suffix
-# similar to the one above. You can set a different format using create-time
-# option `shift_period_suffix`; see details and suggestions at
-# [Time#strftime](rdoc-ref:Time#strftime).
+# The default format for the suffix is <code>'%Y%m%d'</code>, which produces a
+# suffix similar to the one above. You can set a different format using
+# create-time option `shift_period_suffix`; see details and suggestions at
+# [Time#strftime](https://docs.ruby-lang.org/en/master/Time.html#method-i-strfti
+# me).
 #
 class Logger
   interface _WriteCloser
@@ -432,8 +436,9 @@ class Logger
   # Argument `datetime_format` should be either of these:
   #
   # *   A string suitable for use as a format for method
-  #     [Time#strftime](rdoc-ref:Time#strftime).
-  # *   `nil`: the logger uses `'%Y-%m-%dT%H:%M:%S.%6N'`.
+  #     [Time#strftime](https://docs.ruby-lang.org/en/master/Time.html#method-i-st
+  #     rftime).
+  # *   `nil`: the logger uses <code>'%Y-%m-%dT%H:%M:%S.%6N'</code>.
   #
   def datetime_format=: (String datetime_format) -> String
                       | (nil datetime_format) -> nil
@@ -442,7 +447,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - debug(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::DEBUG`.
+  # Equivalent to calling #add with severity <code>Logger::DEBUG</code>.
   #
   def debug: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -468,7 +473,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - error(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::ERROR`.
+  # Equivalent to calling #add with severity <code>Logger::ERROR</code>.
   #
   def error: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -494,7 +499,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - fatal(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::FATAL`.
+  # Equivalent to calling #add with severity <code>Logger::FATAL</code>.
   #
   def fatal: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -531,8 +536,9 @@ class Logger
   #
   # The proc should return a string containing the formatted entry.
   #
-  # This custom formatter uses [String#dump](rdoc-ref:String#dump) to escape the
-  # message string:
+  # This custom formatter uses
+  # [String#dump](https://docs.ruby-lang.org/en/master/String.html#method-i-dump)
+  # to escape the message string:
   #
   #     logger = Logger.new($stdout, progname: 'mung')
   #     original_formatter = logger.formatter || Logger::Formatter.new
@@ -564,8 +570,9 @@ class Logger
   #
   # The proc should return a string containing the formatted entry.
   #
-  # This custom formatter uses [String#dump](rdoc-ref:String#dump) to escape the
-  # message string:
+  # This custom formatter uses
+  # [String#dump](https://docs.ruby-lang.org/en/master/String.html#method-i-dump)
+  # to escape the message string:
   #
   #     logger = Logger.new($stdout, progname: 'mung')
   #     original_formatter = logger.formatter || Logger::Formatter.new
@@ -587,7 +594,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - info(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::INFO`.
+  # Equivalent to calling #add with severity <code>Logger::INFO</code>.
   #
   def info: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -613,7 +620,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - level()
   # -->
-  # Logging severity threshold (e.g. `Logger::INFO`).
+  # Logging severity threshold (e.g. <code>Logger::INFO</code>).
   #
   def level: () -> Integer
 
@@ -642,6 +649,12 @@ class Logger
   #
   alias log add
 
+  # <!-- rdoc-file=lib/logger.rb -->
+  # The underlying log device.
+  #
+  # This is the first argument passed to the constructor, wrapped in a
+  # Logger::LogDevice, along with the binmode flag and rotation options.
+  #
   attr_reader logdev: LogDevice?
 
   # <!-- rdoc-file=lib/logger.rb -->
@@ -656,14 +669,15 @@ class Logger
 
   # <!--
   #   rdoc-file=lib/logger.rb
-  #   - reopen(logdev = nil)
+  #   - reopen(logdev = nil, shift_age = nil, shift_size = nil, shift_period_suffix: nil, binmode: nil)
   # -->
   # Sets the logger's output stream:
   #
   # *   If `logdev` is `nil`, reopens the current output stream.
   # *   If `logdev` is a filepath, opens the indicated file for append.
-  # *   If `logdev` is an IO stream (usually `$stdout`, `$stderr`, or an open File
-  #     object), opens the stream for append.
+  # *   If `logdev` is an IO stream (usually <code>$stdout</code>,
+  #     <code>$stderr</code>, or an open File object), opens the stream for
+  #     append.
   #
   # Example:
   #
@@ -700,7 +714,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - unknown(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::UNKNOWN`.
+  # Equivalent to calling #add with severity <code>Logger::UNKNOWN</code>.
   #
   def unknown: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -708,7 +722,7 @@ class Logger
   #   rdoc-file=lib/logger.rb
   #   - warn(progname = nil, &block)
   # -->
-  # Equivalent to calling #add with severity `Logger::WARN`.
+  # Equivalent to calling #add with severity <code>Logger::WARN</code>.
   #
   def warn: (?untyped progname) ?{ () -> untyped } -> true
 
@@ -730,6 +744,16 @@ class Logger
   #
   def warn?: () -> bool
 
+  # <!--
+  #   rdoc-file=lib/logger.rb
+  #   - with_level(severity) { || ... }
+  # -->
+  # Adjust the log level during the block execution for the current Fiber only
+  #
+  #     logger.with_level(:debug) do
+  #       logger.debug { "Hello" }
+  #     end
+  #
   def with_level: [T] (Integer | interned severity) { () -> T } -> T
 
   # <!--
@@ -745,9 +769,20 @@ class Logger
   #
   # *   A string filepath: entries are to be written to the file at that path; if
   #     the file at that path exists, new entries are appended.
-  # *   An IO stream (typically +$stdout+, +$stderr+. or an open file): entries
-  #     are to be written to the given stream.
-  # *   `nil` or `File::NULL`: no entries are to be written.
+  # *   An IO stream (typically <code>$stdout</code>, <code>$stderr</code>. or an
+  #     open file): entries are to be written to the given stream.
+  # *   An instance of Logger::LogDevice, such as the #logdev of another Logger.
+  # *   `nil` or <code>File::NULL</code>: no entries are to be written.
+  #
+  # Argument `shift_age` must be one of:
+  #
+  # *   The number of log files to be in the rotation. See [Size-Based
+  #     Rotation](rdoc-ref:Logger@Size-Based+Rotation).
+  # *   A string period indicator. See [Periodic
+  #     Rotation](rdoc-ref:Logger@Periodic+Rotation).
+  #
+  # Argument `shift_size` is the maximum size (in bytes) of each log file. See
+  # [Size-Based Rotation](rdoc-ref:Logger@Size-Based+Rotation).
   #
   # Examples:
   #
@@ -768,16 +803,23 @@ class Logger
   #
   # *   `formatter`: sets the entry formatter; default is `nil`. See
   #     [formatter=](Logger.html#attribute-i-formatter).
+  #
   # *   `datetime_format`: sets the format for entry timestamp; default is `nil`.
   #     See #datetime_format=.
+  #
   # *   `binmode`: sets whether the logger writes in binary mode; default is
   #     `false`.
+  #
   # *   `shift_period_suffix`: sets the format for the filename suffix for
-  #     periodic log file rotation; default is `'%Y%m%d'`. See [Periodic
-  #     Rotation](rdoc-ref:Logger@Periodic+Rotation).
+  #     periodic log file rotation; default is <code>'%Y%m%d'</code>. See
+  #     [Periodic Rotation](rdoc-ref:Logger@Periodic+Rotation).
+  #
   # *   `reraise_write_errors`: An array of exception classes, which will be
   #     reraised if there is an error when writing to the log device. The default
   #     is to swallow all exceptions raised.
+  # *   `skip_header`: If `true`, prevents the logger from writing a header when
+  #     creating a new log file. The default is `false`, meaning the header will
+  #     be written as usual.
   #
   def initialize: (logdev? logdev, ?Numeric | String shift_age, ?Integer shift_size, ?level: Integer | interned, ?progname: String?, ?formatter: _Formatter?, ?datetime_format: String?, ?binmode: boolish, ?shift_period_suffix: String, ?reraise_write_errors: Array[singleton(Exception)], ?skip_header: boolish) -> void
 end
