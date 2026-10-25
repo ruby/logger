@@ -1,0 +1,40 @@
+%a{annotate:rdoc:skip}
+class Logger
+  # <!-- rdoc-file=lib/logger/log_device.rb -->
+  # Device used for logging messages.
+  #
+  class LogDevice
+    include MonitorMixin
+
+    attr_reader dev: _WriteCloser
+    attr_reader filename: String?
+
+    # <!--
+    #   rdoc-file=lib/logger/log_device.rb
+    #   - close()
+    # -->
+    #
+    def close: () -> nil
+
+    # <!--
+    #   rdoc-file=lib/logger/log_device.rb
+    #   - reopen(log = nil)
+    # -->
+    #
+    def reopen: (?logdev? log, ?shift_age: (Numeric | String)?, ?shift_size: Integer?, ?shift_period_suffix: String?, ?binmode: boolish?) -> self
+
+    # <!--
+    #   rdoc-file=lib/logger/log_device.rb
+    #   - write(message)
+    # -->
+    #
+    def write: (untyped message) -> untyped
+
+    # <!--
+    #   rdoc-file=lib/logger/log_device.rb
+    #   - new(log = nil, shift_age: nil, shift_size: nil, shift_period_suffix: nil, binmode: false, reraise_write_errors: [])
+    # -->
+    #
+    def initialize: (?logdev? log, ?shift_age: (Numeric | String)?, ?shift_size: Integer?, ?shift_period_suffix: String?, ?binmode: boolish, ?reraise_write_errors: Array[singleton(Exception)], ?skip_header: boolish) -> void
+  end
+end
