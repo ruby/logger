@@ -56,6 +56,29 @@ class TestLoggerSeverity < Test::Unit::TestCase
     assert_equal(logger.level, INFO)
   end
 
+  def test_level_assignment_after_with_level
+    logger = Logger.new(nil)
+    logger.level = INFO
+
+    logger.with_level(:DEBUG) do
+      logger.with_level(:WARN) {}
+      assert_equal(DEBUG, logger.level)
+    end
+    logger.level = ERROR
+
+    assert_equal(ERROR, logger.level)
+  end
+
+  def test_with_level_releases_level_key
+    logger = Logger.new(nil)
+
+    Fiber.new { logger.with_level(:WARN) {} }.resume
+    logger.with_level(:WARN) {}
+    assert_raise(RuntimeError) { logger.with_level(:WARN) { raise "boom" } }
+
+    assert_empty(logger.instance_variable_get(:@level_override))
+  end
+
   def test_thread_local_level
     subclass = Class.new(Logger) do
       def level_key
