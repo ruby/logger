@@ -1,0 +1,37 @@
+%a{annotate:rdoc:skip}
+class Logger
+  # <!-- rdoc-file=lib/logger/severity.rb -->
+  # Logging severity.
+  #
+  module Severity
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # Low-level information, mostly for developers.
+    #
+    DEBUG: Integer
+
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # Generic (useful) information about system operation.
+    #
+    INFO: Integer
+
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # A warning.
+    #
+    WARN: Integer
+
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # A handleable error condition.
+    #
+    ERROR: Integer
+
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # An unhandleable error that results in a program crash.
+    #
+    FATAL: Integer
+
+    # <!-- rdoc-file=lib/logger/severity.rb -->
+    # An unknown message that should always be logged.
+    #
+    UNKNOWN: Integer
+  end
+end
