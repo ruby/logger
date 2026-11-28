@@ -406,7 +406,7 @@ class Logger
   #     logger.debug { "Hello" }
   #   end
   def with_level(severity)
-    prev, level_override[level_key] = level, Severity.coerce(severity)
+    prev, level_override[level_key] = level_override[level_key], Severity.coerce(severity)
     begin
       yield
     ensure
