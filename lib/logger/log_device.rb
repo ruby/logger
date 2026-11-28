@@ -48,15 +48,30 @@ class Logger
     def reopen(log = nil, shift_age: nil, shift_size: nil, shift_period_suffix: nil, binmode: nil)
       # reopen the same filename if no argument, do nothing for IO
       log ||= @filename if @filename
-      @binmode = binmode unless binmode.nil?
       if log
         synchronize do
-          if @filename and @dev
-            @dev.close rescue nil # close only file opened by Logger
-            @filename = nil
+          old_state = [
+            @dev, @filename, @binmode, @shift_age, @shift_size,
+            @shift_period_suffix, @next_rotate_time,
+          ]
+          old_dev, old_filename = old_state
+          @dev = @filename = nil
+          @binmode = binmode unless binmode.nil?
+          begin
+            close_new_dev = set_dev(log)
+            if @filename
+              set_file(shift_age, shift_size, shift_period_suffix)
+            else
+              @shift_age = @shift_size = @shift_period_suffix = @next_rotate_time = nil
+            end
+          rescue Exception
+            new_dev = @dev
+            @dev, @filename, @binmode, @shift_age, @shift_size,
+              @shift_period_suffix, @next_rotate_time = old_state
+            new_dev.close rescue nil if close_new_dev
+            raise
           end
-          set_dev(log)
-          set_file(shift_age, shift_size, shift_period_suffix) if @filename
+          old_dev.close rescue nil if old_filename and old_dev
         end
       end
       self
@@ -83,9 +98,11 @@ class Logger
             @filename = path
           end
         end
+        false
       else
         @dev = open_logfile(log)
         @filename = log
+        true
       end
     end
 
